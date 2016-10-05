@@ -1,0 +1,17 @@
+lockfileVersion: '6.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+dependencies:
+  '@arrow-js/core':
+    specifier: 1.0.0-alpha.9
+    version: 1.0.0-alpha.9
+
+packages:
+
+  /@arrow-js/core@1.0.0-alpha.9:
+    resolution: {integrity: sha512-Yf8UM15AJaUn/6MUxpVjQiSVZMDksvh66TAnaPx4YhaDlcrE0Nn5jx0nMJ4k0JPTpWNmCkF9ank3faJgY6nCVw==}
+    engines: {node: '>=14.0.0'}
+    dev: false

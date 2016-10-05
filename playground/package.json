@@ -1,0 +1,28 @@
+{
+  "name": "@nomen/module-engine",
+  "version": "0.0.1",
+  "description": "",
+  "keywords": [],
+  "license": "MIT",
+  "author": "",
+  "type": "module",
+  "scripts": {
+    "fix": "npx prettier --write .",
+    "test": "uvu"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "dist/*"
+    ]
+  },
+  "dependencies": {
+    "@hattip/adapter-node": "^0.0.35",
+    "nomen":"workspace:*",
+    "@arrow-js/core": "1.0.0-alpha.9"
+  },
+  "devDependencies": {
+    "@barelyhuman/prettier-config": "^1.1.0",
+    "prettier": "^3.0.3",
+    "uvu": "^0.5.6"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "nomen",
+  "version": "0.0.1",
+  "description": "",
+  "keywords": [],
+  "license": "MIT",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "fix": "npx prettier --write .",
+    "test": "uvu"
+  },
+  "dependencies": {
+    "@nomen/module":"workspace:*",
+    "@hattip/compose": "^0.0.35",
+    "@hattip/response": "^0.0.35",
+    "arrow-render-to-string": "0.0.2-beta.0",
+    "esbuild": "^0.19.5"
+  },
+  "devDependencies": {
+    "@barelyhuman/prettier-config": "^1.1.0",
+    "prettier": "^3.0.3",
+    "uvu": "^0.5.6"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@nomen/module",
+  "version": "0.0.0",
+  "author": "Reaper <ahoy@barelyhuman.dev>",
+  "main": "./module.js",
+  "type": "module",
+  "scripts": {
+    "test": "uvu"
+  },
+  "devDependencies": {
+    "uvu": "^0.5.6"
+  }
+}
