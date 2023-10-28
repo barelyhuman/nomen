@@ -1,5 +1,5 @@
 {
-  "name": "@nomen/module-engine",
+  "name": "playground",
   "version": "0.0.1",
   "description": "",
   "keywords": [],
@@ -7,6 +7,8 @@
   "author": "",
   "type": "module",
   "scripts": {
+    "dev": "nodemon entry.js",
+    "start": "node entry.js",
     "fix": "npx prettier --write .",
     "test": "uvu"
   },
@@ -17,12 +19,13 @@
     ]
   },
   "dependencies": {
+    "@arrow-js/core": "1.0.0-alpha.9",
     "@hattip/adapter-node": "^0.0.35",
-    "nomen": "workspace:*",
-    "@arrow-js/core": "1.0.0-alpha.9"
+    "nomen": "workspace:*"
   },
   "devDependencies": {
     "@barelyhuman/prettier-config": "^1.1.0",
+    "nodemon": "^3.0.1",
     "prettier": "^3.0.3",
     "uvu": "^0.5.6"
   }
