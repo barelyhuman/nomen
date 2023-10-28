@@ -17,12 +17,14 @@ defineModule({
     const router = createRouter();
     ctx.router = router;
 
-    const chunkOut = join(ctx.projectRoot, 'dist/route-chunks');
+    const chunkOut = join(ctx.projectRoot, ctx.nomenOut, 'route-chunks');
 
     const allEntries = Object.keys(_routeConfig).map((key) => ({
       source: join(ctx.projectRoot, _routeConfig[key]),
       dist: _routeConfig[key].replace(dirname(_routeConfig[key]), chunkOut),
     }));
+
+    ctx.routerEntries = allEntries;
 
     await esbuild.build({
       entryPoints: allEntries.map((x) => x.source),
@@ -51,11 +53,11 @@ defineModule({
         dirname(_routeConfig[key]),
         chunkOut
       );
-
       const handler = await import(_path);
-
       methods.forEach((method) => {
-        router.add(method, urlPath, handler.default);
+        router.add(method, urlPath, handler, {
+          path: _routeConfig[key],
+        });
       });
     }
   },

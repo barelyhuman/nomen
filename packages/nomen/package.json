@@ -12,10 +12,12 @@
     "test": "uvu"
   },
   "dependencies": {
-    "@nomen/module":"workspace:*",
     "@hattip/compose": "^0.0.35",
     "@hattip/response": "^0.0.35",
+    "@nomen/module": "workspace:*",
+    "acorn": "^8.11.2",
     "arrow-render-to-string": "0.0.2-beta.0",
+    "astring": "^1.8.6",
     "esbuild": "^0.19.5"
   },
   "devDependencies": {

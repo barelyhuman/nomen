@@ -1,6 +1,23 @@
-import { html } from '@arrow-js/core';
+import { html, reactive } from '@arrow-js/core';
 import { Layout } from '../components/layout.js';
 
-export default function view(context, [id]) {
-  return Layout(html`<title>Hello Page</title>`, html`Hello ${id}!`);
+export const state = reactive({
+  id: '',
+  count: 0,
+});
+
+export function render() {
+  return Layout(
+    html`<title>Hello ${() => state.id}</title>`,
+    html`
+      <p>Param ${() => state.id}</p>
+      <p>Hello ${() => state.count}!</p>
+      <button @click="${() => (state.count += 1)}">inc</button>
+      <button @click="${() => (state.count -= 1)}">dec</button>
+    `
+  );
 }
+
+export const onServer = (context, [id]) => {
+  state.id = id;
+};

@@ -25,9 +25,15 @@ importers:
       '@nomen/module':
         specifier: workspace:*
         version: link:../module
+      acorn:
+        specifier: ^8.11.2
+        version: 8.11.2
       arrow-render-to-string:
         specifier: 0.0.2-beta.0
         version: 0.0.2-beta.0(@arrow-js/core@1.0.0-alpha.9)
+      astring:
+        specifier: ^1.8.6
+        version: 1.8.6
       esbuild:
         specifier: ^0.19.5
         version: 0.19.5
@@ -344,12 +350,23 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /acorn@8.11.2:
+    resolution: {integrity: sha512-nc0Axzp/0FILLEVsm4fNwLCwMttvhEI263QtVPQcbpfZZ3ts0hLsZGOpE6czNlid7CJ9MlyH8reXkpsf3YUY4w==}
+    engines: {node: '>=0.4.0'}
+    hasBin: true
+    dev: false
+
   /arrow-render-to-string@0.0.2-beta.0(@arrow-js/core@1.0.0-alpha.9):
     resolution: {integrity: sha512-alIz6EI5pdjlwjhy2hdy0x2WZos0CDyQbsSRrYy3Up46VPyw9gN+ONJka/jcjimUn7TMwtUwvuEcXyRQlxaepQ==}
     peerDependencies:
       '@arrow-js/core': ^1.0.0-alpha.9
     dependencies:
       '@arrow-js/core': 1.0.0-alpha.9
+    dev: false
+
+  /astring@1.8.6:
+    resolution: {integrity: sha512-ISvCdHdlTDlH5IpxQJIex7BWBywFWgjJSVdwst+/iQCoEYnyOaQ95+X1JGshuBjGp6nxKUy1jMgE3zPqN7fQdg==}
+    hasBin: true
     dev: false
 
   /busboy@1.6.0:

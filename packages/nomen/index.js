@@ -7,10 +7,15 @@ import defineRoutes from './src/builder.js';
 import { compose } from '@hattip/compose';
 
 export { defineModule, loadModules } from '@nomen/module';
+export { esbuildArrowClientRender } from './src/lib/arrow-js.js';
 
-export function createNomen({ routes }) {
-  const kernel = {};
+export function createNomen({ routes, esbuildPlugins }) {
+  const kernel = {
+    esbuildPlugins: esbuildPlugins,
+  };
+
   defineRoutes(routes);
+
   return {
     boot: async () => {
       await loadModules(kernel);
@@ -19,11 +24,8 @@ export function createNomen({ routes }) {
       const method = context.request.method;
       const path = new URL(context.request.url).pathname;
       const h = kernel.router.find(method, path);
-      return compose(
-        kernel.handlers.concat((ctx) => {
-          return h.handler(ctx, h.params);
-        })
-      )(context);
+      context.activeRouteHandler = h;
+      return compose(kernel.handlers)(context);
     },
   };
 }

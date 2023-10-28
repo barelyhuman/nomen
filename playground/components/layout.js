@@ -9,7 +9,7 @@ export const Layout = (head, child) => html`
       ${head}
     </head>
     <body>
-      ${child}
+      <div id="app">${child}</div>
     </body>
   </html>
 `;

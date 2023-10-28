@@ -12,12 +12,13 @@
   },
   "nodemonConfig": {
     "ignore": [
-      "dist/*"
+      "dist/*",
+      ".nomen/*"
     ]
   },
   "dependencies": {
     "@hattip/adapter-node": "^0.0.35",
-    "nomen":"workspace:*",
+    "nomen": "workspace:*",
     "@arrow-js/core": "1.0.0-alpha.9"
   },
   "devDependencies": {
