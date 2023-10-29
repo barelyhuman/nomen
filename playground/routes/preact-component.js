@@ -1,8 +1,20 @@
 import { useState } from 'preact/hooks';
 
-export function render() {
+export function render({ ...props }) {
   const [count, setCount] = useState(0);
-  return <button onClick={() => setCount(count + 1)}>{count}</button>;
+
+  return (
+    <>
+      <p>Param: {props.id}</p>
+      <button onClick={() => setCount(count + 1)}>{count}</button>
+    </>
+  );
 }
 
-export const onServer = (context, [id]) => {};
+export const onServer = (context, [id]) => {
+  return {
+    props: {
+      id,
+    },
+  };
+};

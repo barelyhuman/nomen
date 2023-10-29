@@ -82,15 +82,21 @@ export function preact() {
           });
         }
 
+        let serverData = {};
         if ('onServer' in activeRouteHandler.handler) {
-          await activeRouteHandler.handler.onServer(
+          const onServerResult = await activeRouteHandler.handler.onServer(
             ctx,
             activeRouteHandler.params
           );
+          Object.assign(serverData, onServerResult);
         }
 
         const ProxyComponent = activeRouteHandler.handler.render;
-        const componentHTML = renderToString(h(ProxyComponent));
+        const componentHTML = renderToString(
+          h(ProxyComponent, {
+            ...serverData.props,
+          })
+        );
 
         const source = join(
           moduleCtx.projectRoot,
@@ -104,6 +110,9 @@ export function preact() {
             <div id="app">
               ${componentHTML}
             </div>
+            <script type="text/json" id="_meta">
+              ${JSON.stringify(serverData.props, null, 2)}
+            </script>
             <script type="module" defer>
               ${readFileSync(out, 'utf8')}
             </script>
@@ -175,7 +184,11 @@ function esbuildPreactClientRender() {
         content.code += `
           import {h,hydrate} from "preact"
           const appContainer = document.getElementById("app")
-          hydrate(h(render,{}),appContainer)
+          const meta = document.querySelector("script#_meta")
+          const stateJson = JSON.parse(meta.innerText)
+          hydrate(h(render,{
+            ...stateJson
+          }),appContainer)
         `;
 
         return {
