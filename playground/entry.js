@@ -1,4 +1,4 @@
-import { createNomen, enableArrowJS } from 'nomen';
+import { createNomen, enableArrowJS } from 'nomen-js';
 import routes from './routes.js';
 import { createServer } from '@hattip/adapter-node';
 

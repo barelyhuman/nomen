@@ -1,13 +1,13 @@
 import { loadModules } from '@nomen/module';
-import './src/kernel.js';
-import './src/builder.js';
-import './src/handlers.js';
+import './kernel.js';
+import './builder.js';
+import './handlers.js';
 
-import defineRoutes from './src/builder.js';
+import defineRoutes from './builder.js';
 import { compose } from '@hattip/compose';
 
 export { defineModule, loadModules } from '@nomen/module';
-export { enableArrowJS } from './src/lib/arrow-js.js';
+export { enableArrowJS } from './lib/arrow-js.js';
 
 export function createNomen({ routes, esbuildPlugins }) {
   const kernel = {

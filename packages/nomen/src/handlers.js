@@ -1,6 +1,6 @@
 import { json } from '@hattip/response';
 import { defineModule } from '@nomen/module';
-import { toKey } from './lib/router.js';
+import { toKey } from '@nomen/router';
 
 defineModule({
   name: 'nomen:handlers:root',
@@ -16,7 +16,6 @@ defineModule({
   async onLoad(moduleContext) {
     const handler = async (ctx) => {
       const activeRouteHandler = ctx.activeRouteHandler;
-      console.log({ activeRouteHandler });
 
       const method = ctx.request.method;
 
