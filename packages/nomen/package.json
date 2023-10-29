@@ -1,6 +1,6 @@
 {
   "name": "nomen-js",
-  "version": "0.0.1",
+  "version": "0.0.2-beta.0",
   "description": "",
   "keywords": [],
   "license": "MIT",
@@ -12,7 +12,8 @@
   "scripts": {
     "build": "node build.js",
     "fix": "npx prettier --write .",
-    "test": "uvu"
+    "test": "uvu",
+    "next": "bumpp"
   },
   "files": [
     "dist"
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "@barelyhuman/prettier-config": "^1.1.0",
+    "bumpp": "^9.2.0",
     "prettier": "^3.0.3",
     "uvu": "^0.5.6"
   }
