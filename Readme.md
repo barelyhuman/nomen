@@ -1,6 +1,7 @@
 # nomen
 
-`nomen` is a minimalistic but extensible framework for server-rendered applications.
+`nomen` is a minimalistic but extensible framework for server-rendered
+applications.
 
 # Todo
 

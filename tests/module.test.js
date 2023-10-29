@@ -1,6 +1,6 @@
 import { test } from 'uvu';
 import * as assert from 'uvu/assert';
-import { defineModule, loadModules } from './module.js';
+import { defineModule, loadModules } from '../src/lib/module.js';
 
 test('basic load module', async () => {
   const ctx = {};

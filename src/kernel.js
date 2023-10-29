@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { defineModule } from '@nomen/module';
+import { defineModule } from './lib/module.js';
 
 defineModule({
   name: 'nomen:root',

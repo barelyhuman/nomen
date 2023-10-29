@@ -1,6 +1,6 @@
 import { test } from 'uvu';
 import * as assert from 'uvu/assert';
-import { createRouter } from './router.js';
+import { createRouter } from '../src/lib/router.js';
 
 test('basic add route', async () => {
   const router = createRouter();

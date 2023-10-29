@@ -20,7 +20,7 @@
   "dependencies": {
     "@arrow-js/core": "1.0.0-alpha.9",
     "@hattip/adapter-node": "^0.0.35",
-    "nomen-js": "workspace:*"
+    "nomen-js": "file:.."
   },
   "devDependencies": {
     "@barelyhuman/prettier-config": "^1.1.0",

@@ -1,11 +1,35 @@
 {
-  "name": "nomen-mono",
-  "version": "0.0.0",
+  "name": "nomen-js",
+  "version": "0.0.2-beta.5",
   "type": "module",
+  "description": "",
+  "exports": {
+    ".": "./src/index.js",
+    "./arrow": "./src/arrowjs/module.js"
+  },
+  "files": [
+    "./src/*"
+  ],
   "scripts": {
-    "build": "pnpm -r run build",
-    "play": "pnpm --filter=playground run dev",
-    "next": "pnpm --filter=nomen-js run next",
-    "test": "pnpm -r run test"
-  }
+    "next": "bumpp",
+    "test": "uvu",
+    "fix": "prettier --write ."
+  },
+  "dependencies": {
+    "@hattip/compose": "^0.0.35",
+    "@hattip/response": "^0.0.35",
+    "acorn": "^8.11.2",
+    "astring": "^1.8.6",
+    "esbuild": "^0.19.5",
+    "arrow-render-to-string": "0.0.2-beta.0"
+  },
+  "devDependencies": {
+    "@barelyhuman/prettier-config": "^1.1.0",
+    "bumpp": "^9.2.0",
+    "prettier": "^3.0.3",
+    "uvu": "^0.5.6"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
 }

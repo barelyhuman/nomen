@@ -1,6 +1,6 @@
 import { json } from '@hattip/response';
-import { defineModule } from '@nomen/module';
-import { toKey } from '@nomen/router';
+import { defineModule } from './lib/module.js';
+import { toKey } from './lib/router.js';
 
 defineModule({
   name: 'nomen:handlers:root',

@@ -1,10 +1,10 @@
-import { html, reactive } from '@arrow-js/core';
-import { Layout } from '../components/layout.js';
+import { html, reactive } from '@arrow-js/core'
+import { Layout } from '../components/layout.js'
 
 export const state = reactive({
   id: '',
   count: 0,
-});
+})
 
 export function render() {
   return Layout(
@@ -15,9 +15,9 @@ export function render() {
       <button @click="${() => (state.count += 1)}">inc</button>
       <button @click="${() => (state.count -= 1)}">dec</button>
     `
-  );
+  )
 }
 
 export const onServer = (context, [id]) => {
-  state.id = id;
-};
+  state.id = id
+}

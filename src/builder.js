@@ -1,7 +1,7 @@
 import esbuild from 'esbuild';
 import { dirname, join } from 'node:path';
-import { defineModule } from '@nomen/module';
-import { createRouter } from '@nomen/router';
+import { defineModule } from './lib/module.js';
+import { createRouter } from './lib/router.js';
 
 let _routeConfig = {};
 

@@ -1,15 +1,15 @@
-import { loadModules } from '@nomen/module';
-import './kernel.js';
+import { defineModule, loadModules } from './lib/module.js';
 import './builder.js';
 import './handlers.js';
+import './kernel.js';
 
-import defineRoutes from './builder.js';
 import { compose } from '@hattip/compose';
 
-export { defineModule, loadModules } from '@nomen/module';
-export { enableArrowJS } from './lib/arrow-js.js';
+export { defineModule };
 
-export function createNomen({ routes, esbuildPlugins }) {
+import defineRoutes from './builder.js';
+
+export function createNomen({ routes, modules, esbuildPlugins }) {
   const kernel = {
     esbuildPlugins: esbuildPlugins,
   };
@@ -18,6 +18,9 @@ export function createNomen({ routes, esbuildPlugins }) {
 
   return {
     boot: async () => {
+      modules.forEach((mod) => {
+        mod();
+      });
       await loadModules(kernel);
     },
     handler: (context) => {

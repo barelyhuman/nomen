@@ -1,5 +1,5 @@
 import { html } from '@hattip/response';
-import { defineModule } from '@nomen/module';
+import { defineModule } from 'nomen-js';
 import * as acorn from 'acorn';
 import { renderToString } from 'arrow-render-to-string';
 import { generate } from 'astring';
@@ -13,7 +13,7 @@ let clientMapByPath = new Map();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export function enableArrowJS() {
+export function arrowJS() {
   defineModule({
     name: 'nomen:builders:arrowjs',
     dependsOn: ['nomen:builder'],
@@ -36,7 +36,7 @@ export function enableArrowJS() {
       await esbuild.build({
         entryPoints: routeOutputs,
         bundle: true,
-        platform: 'browser',
+        platform: 'node',
         format: 'esm',
         outdir: chunkOut,
         plugins: [esbuildArrowClientRender()],
@@ -127,11 +127,14 @@ export function esbuildArrowClientRender() {
 
         for (let nodeIndex in ast.body) {
           const node = ast.body[nodeIndex];
-          if (node.type == 'ExportNamedDeclaration') {
+          if (node.type == 'ExportNamedDeclaration' && node.declaration) {
             if (
-              node.declaration &&
-              node.declaration.type == 'VariableDeclaration'
+              node.declaration.type == 'FunctionDeclaration' &&
+              node.declaration.id.type == 'Identifier' &&
+              node.declaration.id.name == 'onServer'
             ) {
+              onServerOn = nodeIndex;
+            } else if (node.declaration.type == 'VariableDeclaration') {
               for (let decl of node.declaration.declarations) {
                 if (decl.id && decl.id.type === 'Identifier') {
                   if (decl.id.name == 'onServer') {

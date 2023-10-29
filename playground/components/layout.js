@@ -1,4 +1,4 @@
-import { html } from '@arrow-js/core';
+import { html } from '@arrow-js/core'
 
 export const Layout = (head, child) => html`
   <!doctype html>
@@ -12,4 +12,4 @@ export const Layout = (head, child) => html`
       <div id="app">${child}</div>
     </body>
   </html>
-`;
+`
