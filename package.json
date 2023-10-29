@@ -13,19 +13,21 @@
   "scripts": {
     "next": "bumpp",
     "test": "uvu",
-    "fix": "prettier --write ."
+    "fix": "prettier --write .",
+    "test:ci": "c8 npm run test"
   },
   "dependencies": {
     "@hattip/compose": "^0.0.35",
     "@hattip/response": "^0.0.35",
     "acorn": "^8.11.2",
+    "arrow-render-to-string": "0.0.2-beta.0",
     "astring": "^1.8.6",
-    "esbuild": "^0.19.5",
-    "arrow-render-to-string": "0.0.2-beta.0"
+    "esbuild": "^0.19.5"
   },
   "devDependencies": {
     "@barelyhuman/prettier-config": "^1.1.0",
     "bumpp": "^9.2.0",
+    "c8": "^8.0.1",
     "prettier": "^3.0.3",
     "uvu": "^0.5.6"
   },
