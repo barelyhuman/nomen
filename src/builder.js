@@ -25,14 +25,19 @@ defineModule({
 
     ctx.routerEntries = allEntries;
 
+    const esbuildConfig = ctx.esbuildConfig || {};
+    const plugins = esbuildConfig.plugins || [];
+
     await esbuild.build({
       entryPoints: allEntries.map((x) => x.source),
       bundle: true,
+      external: ['preact'],
       platform: 'node',
       format: 'esm',
       splitting: true,
       outdir: chunkOut,
-      plugins: ctx.esbuildPlugins || [],
+      ...esbuildConfig,
+      plugins,
     });
 
     for (let key of Object.keys(_routeConfig)) {

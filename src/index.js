@@ -9,9 +9,9 @@ export { defineModule };
 
 import defineRoutes from './builder.js';
 
-export function createNomen({ routes, modules, esbuildPlugins }) {
+export function createNomen({ routes, modules, esbuildConfig }) {
   const kernel = {
-    esbuildPlugins: esbuildPlugins,
+    esbuildConfig: esbuildConfig || {},
   };
 
   defineRoutes(routes);

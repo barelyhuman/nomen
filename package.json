@@ -1,11 +1,12 @@
 {
   "name": "nomen-js",
-  "version": "0.0.2-beta.6",
+  "version": "0.0.2-beta.7",
   "type": "module",
   "description": "",
   "exports": {
     ".": "./src/index.js",
-    "./arrow": "./src/arrowjs/module.js"
+    "./arrow": "./src/arrowjs/module.js",
+    "./preact": "./src/preact/module.js"
   },
   "files": [
     "./src/*"
@@ -17,10 +18,11 @@
     "test:ci": "c8 npm run test"
   },
   "dependencies": {
+    "@barelyhuman/astring-jsx": "^2.0.1",
     "@hattip/compose": "^0.0.35",
     "@hattip/response": "^0.0.35",
     "acorn": "^8.11.2",
-    "arrow-render-to-string": "0.0.2-beta.0",
+    "acorn-jsx": "^5.3.2",
     "astring": "^1.8.6",
     "esbuild": "^0.19.5"
   },
@@ -33,5 +35,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "peerDependencies": {
+    "arrow-render-to-string": "^0.0.2-beta.0",
+    "preact-render-to-string": "^6.2.2"
+  }
 }
