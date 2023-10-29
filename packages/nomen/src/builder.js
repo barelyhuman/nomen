@@ -1,14 +1,13 @@
 import esbuild from 'esbuild';
 import { dirname, join } from 'node:path';
 import { defineModule } from '@nomen/module';
+import { toKey } from './lib/router.js';
 
 let _routeConfig = {};
 
 export default async function defineRoutes(routeConfig) {
   _routeConfig = routeConfig;
 }
-
-const allHTTPMethods = ['get', 'post', 'put', 'update', 'delete'];
 
 defineModule({
   name: 'nomen:builder',
@@ -29,7 +28,6 @@ defineModule({
     await esbuild.build({
       entryPoints: allEntries.map((x) => x.source),
       bundle: true,
-      external: ['@arrow-js/core'],
       platform: 'node',
       format: 'esm',
       splitting: true,
@@ -38,26 +36,14 @@ defineModule({
     });
 
     for (let key of Object.keys(_routeConfig)) {
-      const splits = key.split(' ');
-      let methods = [];
       let urlPath = key;
-
-      if (splits.length === 2) {
-        methods.push(splits[0]);
-        urlPath = splits[1];
-      } else {
-        methods.push(...allHTTPMethods);
-      }
-
       const _path = _routeConfig[key].replace(
         dirname(_routeConfig[key]),
         chunkOut
       );
       const handler = await import(_path);
-      methods.forEach((method) => {
-        router.add(method, urlPath, handler, {
-          path: _routeConfig[key],
-        });
+      router.add('all', urlPath, handler, {
+        path: _routeConfig[key],
       });
     }
   },
@@ -77,6 +63,12 @@ function add(routerMap, method, route, handler, meta) {
   const handlers = routerMap.get(key) || [];
   let isDynamic = false;
   let hasWildCard = false;
+  let isRootRoute = false;
+
+  if (route == '/') {
+    isRootRoute = true;
+  }
+
   if (/\*/.test(route)) {
     isDynamic = true;
 
@@ -95,17 +87,24 @@ function add(routerMap, method, route, handler, meta) {
     hasWildCard,
     handler,
     isDynamic,
+    isRootRoute,
     meta,
   });
 
   handlers.sort((x, y) => {
-    if (x.isDynamic && x.hasWildCard) {
-      return 1;
-    } else if (x.isDynamic && !x.hasWildCard) {
-      return -1;
-    } else {
-      return -1;
+    if (x.isRootRoute) {
+      return 2;
     }
+    if (x.hasWildCard && x.isDynamic && y.hasWildCard && y.isDynamic) {
+      return 0;
+    } else if (!x.hasWildCard && x.isDynamic && !y.hasWildCard && y.isDynamic) {
+      return 0;
+    } else if (x.isDyanmic && !y.isDynamic) {
+      return 1;
+    } else if (x.hasWildCard && !y.hasWildCard) {
+      return 1;
+    }
+    return -1;
   });
 
   routerMap.set(key, handlers);
@@ -138,8 +137,4 @@ function find(routerMap, method, urlPath) {
   }
 
   return result;
-}
-
-function toKey(d) {
-  return d.trim().toLowerCase();
 }

@@ -1,4 +1,5 @@
 export default {
-  'GET /': './routes/index.js',
-  'GET /*': './routes/hello.js',
+  '/': './routes/index.js',
+  '/component/*': './routes/component.js',
+  '/api/date': './routes/date.js',
 };

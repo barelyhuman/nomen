@@ -13,70 +13,74 @@ let clientMapByPath = new Map();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-defineModule({
-  name: 'nomen:builders:arrowjs',
-  dependsOn: ['nomen:builder'],
-  async onLoad(ctx) {
-    const routeOutputs = [];
+export function enableArrowJS() {
+  defineModule({
+    name: 'nomen:builders:arrowjs',
+    dependsOn: ['nomen:builder'],
+    async onLoad(ctx) {
+      const routeOutputs = [];
 
-    const chunkOut = join(ctx.projectRoot, ctx.nomenOut, 'client-chunks');
+      const chunkOut = join(ctx.projectRoot, ctx.nomenOut, 'client-chunks');
 
-    for (let entry of ctx.routerEntries) {
-      const fileData = readFileSync(entry.source, 'utf8');
-      if (fileData.includes('@arrow-js/core')) {
-        clientMapByPath.set(
-          entry.source,
-          join(chunkOut, basename(entry.source))
+      for (let entry of ctx.routerEntries) {
+        const fileData = readFileSync(entry.source, 'utf8');
+        if (fileData.includes('@arrow-js/core')) {
+          clientMapByPath.set(
+            entry.source,
+            join(chunkOut, basename(entry.source))
+          );
+          routeOutputs.push(entry.source);
+        }
+      }
+
+      await esbuild.build({
+        entryPoints: routeOutputs,
+        bundle: true,
+        platform: 'browser',
+        format: 'esm',
+        outdir: chunkOut,
+        plugins: [esbuildArrowClientRender()],
+      });
+    },
+  });
+
+  defineModule({
+    name: 'nomen:handlers:arrowjs',
+    dependsOn: ['nomen:handlers:root'],
+    async onLoad(moduleCtx) {
+      const handler = async (ctx) => {
+        const activeRouteHandler = ctx.activeRouteHandler;
+
+        if (activeRouteHandler.params[0] === 'favicon') {
+          return new Response(null, {
+            status: 404,
+          });
+        }
+
+        if (!('render' in activeRouteHandler.handler)) {
+          return new Response(null, {
+            status: 404,
+          });
+        }
+
+        if ('onServer' in activeRouteHandler.handler) {
+          await activeRouteHandler.handler.onServer(
+            ctx,
+            activeRouteHandler.params
+          );
+        }
+        const output = await activeRouteHandler.handler.render();
+        const component = renderToString(output);
+        const currentState = activeRouteHandler.handler.state;
+        const source = join(
+          moduleCtx.projectRoot,
+          activeRouteHandler.meta.path
         );
-        routeOutputs.push(entry.source);
-      }
-    }
 
-    await esbuild.build({
-      entryPoints: routeOutputs,
-      bundle: true,
-      platform: 'browser',
-      format: 'esm',
-      outdir: chunkOut,
-      plugins: [esbuildArrowClientRender()],
-    });
-  },
-});
+        const out = clientMapByPath.get(source);
 
-defineModule({
-  name: 'nomen:handlers:arrowjs',
-  dependsOn: ['nomen:handlers:root'],
-  async onLoad(moduleCtx) {
-    const handler = async (ctx) => {
-      const activeRouteHandler = ctx.activeRouteHandler;
-
-      if (activeRouteHandler.params[0] === 'favicon') {
-        return new Response(null, {
-          status: 404,
-        });
-      }
-
-      if (!('render' in activeRouteHandler.handler)) {
-        return new Response(null, {
-          status: 404,
-        });
-      }
-
-      if ('onServer' in activeRouteHandler.handler) {
-        await activeRouteHandler.handler.onServer(
-          ctx,
-          activeRouteHandler.params
-        );
-      }
-      const output = await activeRouteHandler.handler.render();
-      const component = renderToString(output);
-      const currentState = activeRouteHandler.handler.state;
-      const source = join(moduleCtx.projectRoot, activeRouteHandler.meta.path);
-
-      const out = clientMapByPath.get(source);
-
-      return html(
-        `
+        return html(
+          `
           ${component}
           <script type="application/json" id="_meta">
             ${JSON.stringify(currentState, null, 2)}
@@ -88,17 +92,18 @@ defineModule({
               rehyrdate(state)
           </script>
         `,
-        {
-          headers: {
-            'content-type': 'text/html',
-          },
-        }
-      );
-    };
+          {
+            headers: {
+              'content-type': 'text/html',
+            },
+          }
+        );
+      };
 
-    moduleCtx.handlers.push(handler);
-  },
-});
+      moduleCtx.handlers.push(handler);
+    },
+  });
+}
 
 export function esbuildArrowClientRender() {
   return {

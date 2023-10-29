@@ -1,5 +1,6 @@
 import { json } from '@hattip/response';
 import { defineModule } from '@nomen/module';
+import { toKey } from './lib/router.js';
 
 defineModule({
   name: 'nomen:handlers:root',
@@ -15,18 +16,21 @@ defineModule({
   async onLoad(moduleContext) {
     const handler = async (ctx) => {
       const activeRouteHandler = ctx.activeRouteHandler;
+      console.log({ activeRouteHandler });
 
       const method = ctx.request.method;
 
       let response;
 
-      if (method in activeRouteHandler.handler) {
-        response = activeRouteHandler.handler[method](
+      const key = toKey(method);
+
+      if (key in activeRouteHandler.handler) {
+        response = await activeRouteHandler.handler[key](
           ctx,
           activeRouteHandler.params
         );
       } else if ('all' in activeRouteHandler.handler) {
-        response = activeRouteHandler.handler.all(
+        response = await activeRouteHandler.handler.all(
           ctx,
           activeRouteHandler.params
         );
@@ -41,6 +45,10 @@ defineModule({
       if (typeof response == 'object') {
         return json(response);
       }
+
+      return new Response('', {
+        status: 404,
+      });
     };
 
     moduleContext.handlers.push(handler);

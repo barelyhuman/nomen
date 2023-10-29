@@ -1,10 +1,12 @@
-import { createNomen, esbuildArrowClientRender } from 'nomen';
+import { createNomen, enableArrowJS } from 'nomen';
 import routes from './routes.js';
 import { createServer } from '@hattip/adapter-node';
 
 const nomen = createNomen({
   routes: routes,
 });
+
+enableArrowJS();
 
 await nomen.boot();
 
