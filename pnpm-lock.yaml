@@ -69,9 +69,6 @@ importers:
       prettier:
         specifier: ^3.0.3
         version: 3.0.3
-      uvu:
-        specifier: ^0.5.6
-        version: 0.5.6
 
 packages:
 

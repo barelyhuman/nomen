@@ -9,8 +9,7 @@
   "scripts": {
     "dev": "nodemon entry.js",
     "start": "node entry.js",
-    "fix": "npx prettier --write .",
-    "test": "uvu"
+    "fix": "npx prettier --write ."
   },
   "nodemonConfig": {
     "ignore": [
@@ -26,7 +25,6 @@
   "devDependencies": {
     "@barelyhuman/prettier-config": "^1.1.0",
     "nodemon": "^3.0.1",
-    "prettier": "^3.0.3",
-    "uvu": "^0.5.6"
+    "prettier": "^3.0.3"
   }
 }

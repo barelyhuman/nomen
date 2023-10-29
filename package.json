@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "play": "pnpm --filter=playground run dev"
+    "play": "pnpm --filter=playground run dev",
+    "test": "pnpm -r run test"
   }
 }
