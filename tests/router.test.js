@@ -107,4 +107,15 @@ test('route full match, match start', async () => {
   assert.not.ok(handlerD)
 })
 
+test('router wildcard for assets', async () => {
+  const router = createRouter()
+  const handler = () => {}
+  const handlerWrong = () => {}
+  router.add('get', '/.nomen/**', handler)
+  router.add('get', '/.nomen', handlerWrong)
+  const handlerD = router.find('get', '/.nomen/file/chunk')
+  assert.equal(handlerD.route, '/.nomen/**')
+  assert.equal(handlerD.handler, handler)
+})
+
 test.run()
