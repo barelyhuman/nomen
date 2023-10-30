@@ -1,8 +1,11 @@
 {
   "name": "nomen-js",
   "version": "0.0.2-beta.7",
-  "type": "module",
   "description": "",
+  "keywords": [],
+  "license": "MIT",
+  "author": "",
+  "type": "module",
   "exports": {
     ".": "./src/index.js",
     "./arrow": "./src/arrowjs/module.js",
@@ -12,11 +15,16 @@
     "./src/*"
   ],
   "scripts": {
-    "next": "bumpp",
-    "test": "uvu",
     "fix": "prettier --write .",
+    "next": "bumpp",
+    "prepare": "husky install",
+    "test": "uvu",
     "test:ci": "c8 npm run test"
   },
+  "lint-staged": {
+    "*.{js,css,md,json}": "prettier --write"
+  },
+  "prettier": "@barelyhuman/prettier-config",
   "dependencies": {
     "@barelyhuman/astring-jsx": "^2.0.1",
     "@hattip/compose": "^0.0.35",
@@ -30,13 +38,11 @@
     "@barelyhuman/prettier-config": "^1.1.0",
     "bumpp": "^9.2.0",
     "c8": "^8.0.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.0.2",
     "prettier": "^3.0.3",
     "uvu": "^0.5.6"
   },
-  "prettier": "@barelyhuman/prettier-config",
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
   "peerDependencies": {
     "arrow-render-to-string": "^0.0.2-beta.0",
     "preact-render-to-string": "^6.2.2"
