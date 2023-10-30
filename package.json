@@ -12,7 +12,7 @@
     "./preact": "./src/preact/module.js"
   },
   "files": [
-    "./src/*"
+    "src"
   ],
   "scripts": {
     "fix": "prettier --write .",
