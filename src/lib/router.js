@@ -11,7 +11,7 @@ export function createRouter() {
   }
 }
 
-function add(routerMap, method, route, handler, meta) {
+function add(routerMap, method, route, handler, meta = {}) {
   const key = toKey(method)
   const handlers = routerMap.get(key) || []
   let isDynamic = false

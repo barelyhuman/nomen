@@ -1,24 +1,21 @@
+import astring from '@barelyhuman/astring-jsx'
+import esbuildIslandPlugins from '@barelyhuman/preact-island-plugins/esbuild'
 import { html } from '@hattip/response'
-import { defineModule } from '../lib/module.js'
 import * as acorn from 'acorn'
 import jsx from 'acorn-jsx'
-import renderToString from 'preact-render-to-string'
-import astring from '@barelyhuman/astring-jsx'
 import esbuild from 'esbuild'
 import { readFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
-import { basename, dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { basename, join } from 'node:path'
 import { h } from 'preact'
-import { addImportToAST } from '../lib/ast.js'
+import renderToString from 'preact-render-to-string'
+import { defineModule } from '../lib/module.js'
 
 const { generate } = astring
 
 let clientMapByPath = new Map()
 
 const parser = acorn.Parser.extend(jsx())
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export function preact() {
   defineModule({
@@ -27,6 +24,7 @@ export function preact() {
     async onLoad(ctx) {
       const routeOutputs = []
 
+      const serverChunkOut = join(ctx.projectRoot, ctx.nomenOut, 'route-chunks')
       const chunkOut = join(ctx.projectRoot, ctx.nomenOut, 'client-chunks')
 
       for (let entry of ctx.routerEntries) {
@@ -48,14 +46,26 @@ export function preact() {
         entryPoints: routeOutputs,
         bundle: true,
         platform: 'node',
+        allowOverwrite: true,
         jsx: 'automatic',
         jsxImportSource: 'preact',
         loader: {
           '.js': 'jsx',
         },
+        external: ['preact'],
         format: 'esm',
-        outdir: chunkOut,
-        plugins: [esbuildPreactClientRender()],
+        outdir: serverChunkOut,
+        plugins: [
+          esbuildIslandPlugins({
+            root: ctx.projectRoot,
+            baseURL: '/.nomen/client-chunks/',
+            atomic: true,
+            client: {
+              output: join(ctx.projectRoot, '.nomen/client-chunks'),
+            },
+          }),
+          esbuildPreactClientRender(),
+        ],
       })
     },
   })
@@ -87,37 +97,31 @@ export function preact() {
           })
         }
 
+        const compiledModule = await import(
+          `${activeRouteHandler.meta.outfile}?t=${Date.now()}`
+        )
+
         let serverData = {}
-        if ('onServer' in activeRouteHandler.handler) {
-          const onServerResult = await activeRouteHandler.handler.onServer(
+        if ('onServer' in compiledModule) {
+          const onServerResult = await compiledModule.onServer(
             ctx,
             activeRouteHandler.params
           )
           Object.assign(serverData, onServerResult)
         }
 
-        const ProxyComponent = activeRouteHandler.handler.render
+        const ProxyComponent = compiledModule.render
         const componentHTML = renderToString(
           h(ProxyComponent, {
             ...serverData.props,
           })
         )
 
-        const source = join(moduleCtx.projectRoot, activeRouteHandler.meta.path)
-
-        const out = clientMapByPath.get(source)
-
         return html(
           `
             <div id="app">
               ${componentHTML}
             </div>
-            <script type="text/json" id="_meta">
-              ${JSON.stringify(serverData.props, null, 2)}
-            </script>
-            <script type="module" defer>
-              ${readFileSync(out, 'utf8')}
-            </script>
           `,
           {
             headers: {
@@ -175,10 +179,6 @@ function esbuildPreactClientRender() {
 
         ast.body = ast.body.filter((x, i) => i != onServerOn)
 
-        const addImport = addImportToAST(ast)
-        addImport('h', 'preact', { named: true })
-        addImport('hydrate', 'preact', { named: true })
-
         const content = await esbuild.transform(generate(ast), {
           loader: 'jsx',
           jsx: 'preserve',
@@ -186,15 +186,6 @@ function esbuildPreactClientRender() {
           platform: 'browser',
           format: 'esm',
         })
-
-        content.code += `
-          const appContainer = document.getElementById("app")
-          const meta = document.querySelector("script#_meta")
-          const stateJson = JSON.parse(meta.innerText)
-          hydrate(h(render,{
-            ...stateJson
-          }),appContainer)
-        `
 
         return {
           contents: content.code,

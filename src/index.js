@@ -32,6 +32,12 @@ export function createNomen({ routes, modules, esbuildConfig }) {
         })
       }
       context.activeRouteHandler = baseRouteHandler
+      if (baseRouteHandler.meta.disableMiddleware) {
+        return context.activeRouteHandler.handler(
+          context,
+          baseRouteHandler.params
+        )
+      }
       return compose(kernel.handlers)(context)
     },
   }

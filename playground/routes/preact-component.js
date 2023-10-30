@@ -1,18 +1,10 @@
-import { h } from 'preact'
-import { useState } from 'preact/hooks'
-
-const Button = ({ ...props }) =>
-  h('button', {
-    ...props,
-  })
+import Counter from '../components/preact-island'
 
 export function render({ ...props }) {
-  const [count, setCount] = useState(0)
-
   return (
     <>
       <p>Param: {props.id}</p>
-      <Button onClick={() => setCount(count + 1)}>{count}</Button>
+      <Counter initCount={+props.id} />
     </>
   )
 }
