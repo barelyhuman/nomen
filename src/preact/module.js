@@ -10,6 +10,7 @@ import { readFile } from 'node:fs/promises'
 import { basename, dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { h } from 'preact'
+import { addImportToAST } from '../lib/ast.js'
 
 const { generate } = astring
 
@@ -29,8 +30,12 @@ export function preact() {
       const chunkOut = join(ctx.projectRoot, ctx.nomenOut, 'client-chunks')
 
       for (let entry of ctx.routerEntries) {
-        const fileData = readFileSync(entry.source, 'utf8')
-        if (fileData.includes('preact')) {
+        // In case of preact, the output will have the import since the
+        // preact import might not be used while defining jsx components
+        // and is controlled the `esbuildConfig` passed to nomen
+        const outFileData = readFileSync(entry.dist, 'utf8')
+
+        if (outFileData.includes('preact')) {
           clientMapByPath.set(
             entry.source,
             join(chunkOut, basename(entry.source))
@@ -170,6 +175,10 @@ function esbuildPreactClientRender() {
 
         ast.body = ast.body.filter((x, i) => i != onServerOn)
 
+        const addImport = addImportToAST(ast)
+        addImport('h', 'preact', { named: true })
+        addImport('hydrate', 'preact', { named: true })
+
         const content = await esbuild.transform(generate(ast), {
           loader: 'jsx',
           jsx: 'preserve',
@@ -179,7 +188,6 @@ function esbuildPreactClientRender() {
         })
 
         content.code += `
-          import {h,hydrate} from "preact"
           const appContainer = document.getElementById("app")
           const meta = document.querySelector("script#_meta")
           const stateJson = JSON.parse(meta.innerText)

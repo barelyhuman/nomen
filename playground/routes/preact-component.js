@@ -1,4 +1,10 @@
+import { h } from 'preact'
 import { useState } from 'preact/hooks'
+
+const Button = ({ ...props }) =>
+  h('button', {
+    ...props,
+  })
 
 export function render({ ...props }) {
   const [count, setCount] = useState(0)
@@ -6,7 +12,7 @@ export function render({ ...props }) {
   return (
     <>
       <p>Param: {props.id}</p>
-      <button onClick={() => setCount(count + 1)}>{count}</button>
+      <Button onClick={() => setCount(count + 1)}>{count}</Button>
     </>
   )
 }
