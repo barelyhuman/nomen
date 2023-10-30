@@ -89,12 +89,21 @@ test('root route discard test 2', async () => {
   assert.equal(handlerD.handler, handler)
 })
 
-test('route full match handler', async () => {
+test('route full match, match end', async () => {
   const router = createRouter()
   const handler = () => {}
   router.add('get', '/user', handler)
   router.add('get', '/userhello/*', handler)
   const handlerD = router.find('get', '/userhello')
+  assert.not.ok(handlerD)
+})
+
+test('route full match, match start', async () => {
+  const router = createRouter()
+  const handler = () => {}
+  router.add('get', '/', handler)
+  router.add('get', '/userhello/*', handler)
+  const handlerD = router.find('get', '/userhello/')
   assert.not.ok(handlerD)
 })
 

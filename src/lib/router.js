@@ -29,7 +29,7 @@ function add(routerMap, method, route, handler, meta) {
     .replace(/[/](\*{2})/g, '[/]*(.*)')
     .replace(/[/]\*{1}/g, '[/](\\w+)')
 
-  _regex = new RegExp(`${_regex}$`)
+  _regex = new RegExp(`^${_regex}$`)
 
   handlers.push({
     route,
