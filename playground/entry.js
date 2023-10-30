@@ -20,5 +20,5 @@ const nomen = createNomen({
 await nomen.boot()
 
 createServer(nomen.handler).listen(3000, () => {
-  console.log(`Listening on http://localhost: 3000`)
+  console.log(`Listening on http://localhost:3000`)
 })

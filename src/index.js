@@ -25,8 +25,13 @@ export function createNomen({ routes, modules, esbuildConfig }) {
     },
     handler: context => {
       const path = new URL(context.request.url).pathname
-      const h = kernel.router.find('all', path)
-      context.activeRouteHandler = h
+      const baseRouteHandler = kernel.router.find('all', path)
+      if (!baseRouteHandler) {
+        return new Response('Not Found', {
+          status: 404,
+        })
+      }
+      context.activeRouteHandler = baseRouteHandler
       return compose(kernel.handlers)(context)
     },
   }
