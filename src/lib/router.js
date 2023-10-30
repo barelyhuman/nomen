@@ -16,11 +16,6 @@ function add(routerMap, method, route, handler, meta) {
   const handlers = routerMap.get(key) || [];
   let isDynamic = false;
   let hasWildCard = false;
-  let isRootRoute = false;
-
-  if (route == '/') {
-    isRootRoute = true;
-  }
 
   if (/\*/.test(route)) {
     isDynamic = true;
@@ -30,9 +25,11 @@ function add(routerMap, method, route, handler, meta) {
     }
   }
 
-  const _regex = route
+  let _regex = route
     .replace(/[/](\*{2})/g, '[/]*(.*)')
     .replace(/[/]\*{1}/g, '[/](\\w+)');
+
+  _regex = new RegExp(`${_regex}$`);
 
   handlers.push({
     route,
@@ -40,14 +37,10 @@ function add(routerMap, method, route, handler, meta) {
     hasWildCard,
     handler,
     isDynamic,
-    isRootRoute,
     meta,
   });
 
   handlers.sort((x, y) => {
-    if (x.isRootRoute) {
-      return 2;
-    }
     if (x.hasWildCard && x.isDynamic && y.hasWildCard && y.isDynamic) {
       return 0;
     } else if (!x.hasWildCard && x.isDynamic && !y.hasWildCard && y.isDynamic) {
