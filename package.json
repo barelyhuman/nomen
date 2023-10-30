@@ -33,6 +33,7 @@
     "prettier": "^3.0.3",
     "uvu": "^0.5.6"
   },
+  "prettier": "@barelyhuman/prettier-config",
   "keywords": [],
   "author": "",
   "license": "MIT",

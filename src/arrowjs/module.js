@@ -1,35 +1,35 @@
-import { html } from '@hattip/response';
-import { defineModule } from '../lib/module.js';
-import * as acorn from 'acorn';
-import { renderToString } from 'arrow-render-to-string';
-import { generate } from 'astring';
-import esbuild from 'esbuild';
-import { readFileSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
-import { basename, dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { html } from '@hattip/response'
+import { defineModule } from '../lib/module.js'
+import * as acorn from 'acorn'
+import { renderToString } from 'arrow-render-to-string'
+import { generate } from 'astring'
+import esbuild from 'esbuild'
+import { readFileSync } from 'node:fs'
+import { readFile } from 'node:fs/promises'
+import { basename, dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-let clientMapByPath = new Map();
+let clientMapByPath = new Map()
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export function arrowJS() {
   defineModule({
     name: 'nomen:builders:arrowjs',
     dependsOn: ['nomen:builder'],
     async onLoad(ctx) {
-      const routeOutputs = [];
+      const routeOutputs = []
 
-      const chunkOut = join(ctx.projectRoot, ctx.nomenOut, 'client-chunks');
+      const chunkOut = join(ctx.projectRoot, ctx.nomenOut, 'client-chunks')
 
       for (let entry of ctx.routerEntries) {
-        const fileData = readFileSync(entry.source, 'utf8');
+        const fileData = readFileSync(entry.source, 'utf8')
         if (fileData.includes('@arrow-js/core')) {
           clientMapByPath.set(
             entry.source,
             join(chunkOut, basename(entry.source))
-          );
-          routeOutputs.push(entry.source);
+          )
+          routeOutputs.push(entry.source)
         }
       }
 
@@ -40,58 +40,55 @@ export function arrowJS() {
         format: 'esm',
         outdir: chunkOut,
         plugins: [esbuildArrowClientRender()],
-      });
+      })
     },
-  });
+  })
 
   defineModule({
     name: 'nomen:handlers:arrowjs',
     dependsOn: ['nomen:handlers:root'],
     async onLoad(moduleCtx) {
-      const handler = async (ctx) => {
-        const activeRouteHandler = ctx.activeRouteHandler;
+      const handler = async ctx => {
+        const activeRouteHandler = ctx.activeRouteHandler
 
         if (
           !clientMapByPath.has(
             join(moduleCtx.projectRoot, activeRouteHandler.meta.path)
           )
         ) {
-          return await ctx.next();
+          return await ctx.next()
         }
 
         if (activeRouteHandler.params[0] === 'favicon') {
           return new Response(null, {
             status: 404,
-          });
+          })
         }
 
         if (!('render' in activeRouteHandler.handler)) {
           return new Response(null, {
             status: 404,
-          });
+          })
         }
 
         if ('onServer' in activeRouteHandler.handler) {
           await activeRouteHandler.handler.onServer(
             ctx,
             activeRouteHandler.params
-          );
+          )
         }
 
-        const output = await activeRouteHandler.handler.render();
+        const output = await activeRouteHandler.handler.render()
 
         if (!('isT' in output)) {
-          return await ctx.next();
+          return await ctx.next()
         }
 
-        const component = renderToString(output);
-        const currentState = activeRouteHandler.handler.state;
-        const source = join(
-          moduleCtx.projectRoot,
-          activeRouteHandler.meta.path
-        );
+        const component = renderToString(output)
+        const currentState = activeRouteHandler.handler.state
+        const source = join(moduleCtx.projectRoot, activeRouteHandler.meta.path)
 
-        const out = clientMapByPath.get(source);
+        const out = clientMapByPath.get(source)
 
         return html(
           `
@@ -111,12 +108,12 @@ export function arrowJS() {
               'content-type': 'text/html',
             },
           }
-        );
-      };
+        )
+      }
 
-      moduleCtx.handlers.push(handler);
+      moduleCtx.handlers.push(handler)
     },
-  });
+  })
 }
 
 export function esbuildArrowClientRender() {
@@ -127,32 +124,32 @@ export function esbuildArrowClientRender() {
         // Nothing has side-effects, since it's for DCE anyway
         return {
           sideEffects: false,
-        };
-      });
-      build.onLoad({ filter: /\.js$/ }, async (args) => {
-        const source = await readFile(args.path, 'utf8');
+        }
+      })
+      build.onLoad({ filter: /\.js$/ }, async args => {
+        const source = await readFile(args.path, 'utf8')
 
         const ast = acorn.parse(source, {
           ecmaVersion: 'latest',
           sourceType: 'module',
-        });
+        })
 
-        let onServerOn;
+        let onServerOn
 
         for (let nodeIndex in ast.body) {
-          const node = ast.body[nodeIndex];
+          const node = ast.body[nodeIndex]
           if (node.type == 'ExportNamedDeclaration' && node.declaration) {
             if (
               node.declaration.type == 'FunctionDeclaration' &&
               node.declaration.id.type == 'Identifier' &&
               node.declaration.id.name == 'onServer'
             ) {
-              onServerOn = nodeIndex;
+              onServerOn = nodeIndex
             } else if (node.declaration.type == 'VariableDeclaration') {
               for (let decl of node.declaration.declarations) {
                 if (decl.id && decl.id.type === 'Identifier') {
                   if (decl.id.name == 'onServer') {
-                    onServerOn = nodeIndex;
+                    onServerOn = nodeIndex
                   }
                 }
               }
@@ -160,16 +157,16 @@ export function esbuildArrowClientRender() {
           }
         }
 
-        ast.body = ast.body.filter((x, i) => i != onServerOn);
+        ast.body = ast.body.filter((x, i) => i != onServerOn)
         const content = await esbuild.transform(generate(ast), {
           treeShaking: true,
           platform: 'browser',
-        });
+        })
 
         return {
           contents: content.code,
-        };
-      });
+        }
+      })
     },
-  };
+  }
 }

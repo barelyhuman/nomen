@@ -1,33 +1,33 @@
-import { defineModule, loadModules } from './lib/module.js';
-import './builder.js';
-import './handlers.js';
-import './kernel.js';
+import { defineModule, loadModules } from './lib/module.js'
+import './builder.js'
+import './handlers.js'
+import './kernel.js'
 
-import { compose } from '@hattip/compose';
+import { compose } from '@hattip/compose'
 
-export { defineModule };
+export { defineModule }
 
-import defineRoutes from './builder.js';
+import defineRoutes from './builder.js'
 
 export function createNomen({ routes, modules, esbuildConfig }) {
   const kernel = {
     esbuildConfig: esbuildConfig || {},
-  };
+  }
 
-  defineRoutes(routes);
+  defineRoutes(routes)
 
   return {
     boot: async () => {
-      modules.forEach((mod) => {
-        mod();
-      });
-      await loadModules(kernel);
+      modules.forEach(mod => {
+        mod()
+      })
+      await loadModules(kernel)
     },
-    handler: (context) => {
-      const path = new URL(context.request.url).pathname;
-      const h = kernel.router.find('all', path);
-      context.activeRouteHandler = h;
-      return compose(kernel.handlers)(context);
+    handler: context => {
+      const path = new URL(context.request.url).pathname
+      const h = kernel.router.find('all', path)
+      context.activeRouteHandler = h
+      return compose(kernel.handlers)(context)
     },
-  };
+  }
 }
