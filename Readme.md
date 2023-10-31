@@ -26,9 +26,9 @@ Think of it as another "One Man fullstack framework" in the JS land
 - [x] Rendering Engine
 - [x] Bundle Chunker
 - [x] Plugin API (mostly just a layer atop esbuild's plugin API)
-- [ ] Adaptors for various server renderers
+- [x] Adaptors for various server renderers
   - [x] ArrowJS
-  - [ ] Preact
+  - [x] Preact
 - [ ] Page Head Support
 - [ ] Custom Template (_index.html_)
 - [ ] Custom 404 Page

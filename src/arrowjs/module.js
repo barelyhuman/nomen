@@ -1,13 +1,11 @@
 import { html } from '@hattip/response'
-import { defineModule } from '../lib/module.js'
-import * as acorn from 'acorn'
 import { renderToString } from 'arrow-render-to-string'
-import { generate } from 'astring'
 import esbuild from 'esbuild'
 import { readFileSync } from 'node:fs'
-import { readFile } from 'node:fs/promises'
 import { basename, dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { defineModule } from '../lib/module.js'
+import { esbuildClientNormalizer } from '../lib/plugins/client-normalizer.js'
 
 let clientMapByPath = new Map()
 
@@ -39,7 +37,7 @@ export function arrowJS() {
         platform: 'node',
         format: 'esm',
         outdir: chunkOut,
-        plugins: [esbuildArrowClientRender()],
+        plugins: [esbuildClientNormalizer()],
       })
     },
   })
@@ -96,11 +94,18 @@ export function arrowJS() {
           <script type="application/json" id="_meta">
             ${JSON.stringify(currentState, null, 2)}
           </script>
+          
           <script type="module">
-              ${readFileSync(out, 'utf8')}
-              ${readFileSync(join(__dirname, './rehydrate.js'), 'utf8')}
-              
-              rehyrdate(state)
+            import {state,render} from "/${join(
+              '.nomen',
+              basename(dirname(out)),
+              basename(out)
+            )}"
+
+            ${readFileSync(join(__dirname, 'rehydrate.js'), 'utf8')}
+
+            rehydrate(state,render)
+            
           </script>
         `,
           {
@@ -114,59 +119,4 @@ export function arrowJS() {
       moduleCtx.handlers.push(handler)
     },
   })
-}
-
-export function esbuildArrowClientRender() {
-  return {
-    name: 'nomen:arrow:esbuild:client',
-    setup(build) {
-      build.onResolve({ filter: /\.js$/ }, async () => {
-        // Nothing has side-effects, since it's for DCE anyway
-        return {
-          sideEffects: false,
-        }
-      })
-      build.onLoad({ filter: /\.js$/ }, async args => {
-        const source = await readFile(args.path, 'utf8')
-
-        const ast = acorn.parse(source, {
-          ecmaVersion: 'latest',
-          sourceType: 'module',
-        })
-
-        let onServerOn
-
-        for (let nodeIndex in ast.body) {
-          const node = ast.body[nodeIndex]
-          if (node.type == 'ExportNamedDeclaration' && node.declaration) {
-            if (
-              node.declaration.type == 'FunctionDeclaration' &&
-              node.declaration.id.type == 'Identifier' &&
-              node.declaration.id.name == 'onServer'
-            ) {
-              onServerOn = nodeIndex
-            } else if (node.declaration.type == 'VariableDeclaration') {
-              for (let decl of node.declaration.declarations) {
-                if (decl.id && decl.id.type === 'Identifier') {
-                  if (decl.id.name == 'onServer') {
-                    onServerOn = nodeIndex
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        ast.body = ast.body.filter((x, i) => i != onServerOn)
-        const content = await esbuild.transform(generate(ast), {
-          treeShaking: true,
-          platform: 'browser',
-        })
-
-        return {
-          contents: content.code,
-        }
-      })
-    },
-  }
 }

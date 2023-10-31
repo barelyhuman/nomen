@@ -1,21 +1,14 @@
-import astring from '@barelyhuman/astring-jsx'
 import esbuildIslandPlugins from '@barelyhuman/preact-island-plugins/esbuild'
 import { html } from '@hattip/response'
-import * as acorn from 'acorn'
-import jsx from 'acorn-jsx'
 import esbuild from 'esbuild'
 import { readFileSync } from 'node:fs'
-import { readFile } from 'node:fs/promises'
 import { basename, join } from 'node:path'
 import { h } from 'preact'
 import renderToString from 'preact-render-to-string'
 import { defineModule } from '../lib/module.js'
-
-const { generate } = astring
+import { esbuildClientNormalizer } from '../lib/plugins/client-normalizer.js'
 
 let clientMapByPath = new Map()
-
-const parser = acorn.Parser.extend(jsx())
 
 export function preact() {
   defineModule({
@@ -64,7 +57,10 @@ export function preact() {
               output: join(ctx.projectRoot, '.nomen/client-chunks'),
             },
           }),
-          esbuildPreactClientRender(),
+          esbuildClientNormalizer({
+            loader: 'jsx',
+            jsx: 'preserve',
+          }),
         ],
       })
     },
@@ -134,64 +130,4 @@ export function preact() {
       moduleCtx.handlers.push(handler)
     },
   })
-}
-
-function esbuildPreactClientRender() {
-  return {
-    name: 'nomen:preact:esbuild:client',
-    setup(build) {
-      build.onResolve({ filter: /\.js$/ }, async () => {
-        // Nothing has side-effects, since it's for DCE anyway
-        return {
-          sideEffects: false,
-        }
-      })
-      build.onLoad({ filter: /\.js$/ }, async args => {
-        const source = await readFile(args.path, 'utf8')
-
-        const ast = parser.parse(source, {
-          ecmaVersion: 'latest',
-          sourceType: 'module',
-        })
-
-        let onServerOn
-
-        for (let nodeIndex in ast.body) {
-          const node = ast.body[nodeIndex]
-          if (node.type == 'ExportNamedDeclaration' && node.declaration) {
-            if (
-              node.declaration.type == 'FunctionDeclaration' &&
-              node.declaration.id.type == 'Identifier' &&
-              node.declaration.id.name == 'onServer'
-            ) {
-              onServerOn = nodeIndex
-            } else if (node.declaration.type == 'VariableDeclaration') {
-              for (let decl of node.declaration.declarations) {
-                if (decl.id && decl.id.type === 'Identifier') {
-                  if (decl.id.name == 'onServer') {
-                    onServerOn = nodeIndex
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        ast.body = ast.body.filter((x, i) => i != onServerOn)
-
-        const content = await esbuild.transform(generate(ast), {
-          loader: 'jsx',
-          jsx: 'preserve',
-          treeShaking: true,
-          platform: 'browser',
-          format: 'esm',
-        })
-
-        return {
-          contents: content.code,
-          loader: 'jsx',
-        }
-      })
-    },
-  }
 }
