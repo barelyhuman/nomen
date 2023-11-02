@@ -106,6 +106,8 @@ export function preact() {
           Object.assign(serverData, onServerResult)
         }
 
+        const headContext = moduleCtx.getHeadContext()
+
         const ProxyComponent = compiledModule.render
         const componentHTML = renderToString(
           h(ProxyComponent, {
@@ -115,9 +117,16 @@ export function preact() {
 
         return html(
           `
-            <div id="app">
-              ${componentHTML}
-            </div>
+            <html>
+              <head>
+                ${
+                  headContext.title ? `<title>${headContext.title}</title>` : ''
+                }
+              </head>
+              <body>
+                <div id="app">${componentHTML}</div>
+              </body>
+            </html>
           `,
           {
             headers: {

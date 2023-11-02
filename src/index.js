@@ -2,6 +2,7 @@ import { defineModule, loadModules } from './lib/module.js'
 import './builder.js'
 import './handlers.js'
 import './kernel.js'
+import './head/module.js'
 
 import { compose } from '@hattip/compose'
 
@@ -9,7 +10,11 @@ export { defineModule }
 
 import defineRoutes from './builder.js'
 
-export function createNomen({ routes, modules, esbuildConfig }) {
+export function createNomen({
+  routes = {},
+  modules = [],
+  esbuildConfig = {},
+} = {}) {
   const kernel = {
     esbuildConfig: esbuildConfig || {},
   }

@@ -9,7 +9,8 @@
   "exports": {
     ".": "./src/index.js",
     "./arrow": "./src/arrowjs/module.js",
-    "./preact": "./src/preact/module.js"
+    "./preact": "./src/preact/module.js",
+    "./head": "./src/head/module.js"
   },
   "files": [
     "src"

@@ -21,7 +21,7 @@
     "@arrow-js/core": "1.0.0-alpha.9",
     "@hattip/adapter-node": "^0.0.35",
     "arrow-render-to-string": "^0.0.1",
-    "nomen-js": "file:.."
+    "nomen-js": "*"
   },
   "devDependencies": {
     "@barelyhuman/prettier-config": "^1.1.0",

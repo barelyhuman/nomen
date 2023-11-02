@@ -13,7 +13,7 @@ export default async function defineRoutes(routeConfig) {
 
 defineModule({
   name: 'nomen:builder',
-  dependsOn: ['nomen:root'],
+  dependsOn: ['nomen:root', 'nomen:internal:html:head'],
   async onLoad(ctx) {
     const router = createRouter()
     ctx.router = router
