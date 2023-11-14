@@ -1,5 +1,6 @@
 import { html, reactive } from '@arrow-js/core'
 import { Layout } from '../components/layout.js'
+import { head } from 'nomen-js/head'
 
 export const state = reactive({
   id: '',
@@ -7,17 +8,17 @@ export const state = reactive({
 })
 
 export function render() {
-  return Layout(
-    html`<title>Hello ${() => state.id}</title>`,
-    html`
-      <p>Param ${() => state.id}</p>
-      <p>Hello ${() => state.count}!</p>
-      <button @click="${() => (state.count += 1)}">inc</button>
-      <button @click="${() => (state.count -= 1)}">dec</button>
-    `
-  )
+  return html`
+    <p>Param ${() => state.id}</p>
+    <p>Hello ${() => state.count}!</p>
+    <button @click="${() => (state.count += 1)}">inc</button>
+    <button @click="${() => (state.count -= 1)}">dec</button>
+  `
 }
 
 export const onServer = (context, [id]) => {
   state.id = id
+  head({
+    title: `Hello ${state.id}`,
+  })
 }

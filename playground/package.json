@@ -7,7 +7,7 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "dev": "nodemon entry.js",
+    "dev": "nomen entry.js",
     "fix": "npx prettier --write .",
     "start": "node entry.js"
   },
@@ -21,10 +21,11 @@
     "@arrow-js/core": "1.0.0-alpha.9",
     "@hattip/adapter-node": "^0.0.35",
     "arrow-render-to-string": "^0.0.1",
-    "nomen-js": "*"
+    "nomen-js": "workspace:*"
   },
   "devDependencies": {
     "@barelyhuman/prettier-config": "^1.1.0",
+    "esbuild-plugin-node-externals": "^1.0.1",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.3"
   }

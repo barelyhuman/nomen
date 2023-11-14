@@ -21,22 +21,21 @@ export function arrowJS() {
       const chunkOut = join(ctx.projectRoot, ctx.nomenOut, 'client-chunks')
 
       for (let entry of ctx.routerEntries) {
-        const fileData = readFileSync(entry.source, 'utf8')
-        if (fileData.includes('@arrow-js/core')) {
-          clientMapByPath.set(
-            entry.source,
-            join(chunkOut, basename(entry.source))
-          )
-          routeOutputs.push(entry.source)
+        const sourceCode = entry.transformedSource
+        if (sourceCode.includes('@arrow-js/core')) {
+          clientMapByPath.set(entry.path, join(chunkOut, basename(entry.path)))
+          routeOutputs.push(entry.path)
         }
       }
 
+      const userBuildConfig = ctx.client?.esbuildOptions || {}
       await esbuild.build({
         entryPoints: routeOutputs,
         bundle: true,
         platform: 'node',
         format: 'esm',
         outdir: chunkOut,
+        ...userBuildConfig,
         plugins: [esbuildClientNormalizer()],
       })
     },
@@ -49,11 +48,7 @@ export function arrowJS() {
       const handler = async ctx => {
         const activeRouteHandler = ctx.activeRouteHandler
 
-        if (
-          !clientMapByPath.has(
-            join(moduleCtx.projectRoot, activeRouteHandler.meta.path)
-          )
-        ) {
+        if (!clientMapByPath.has(activeRouteHandler.meta.path)) {
           return await ctx.next()
         }
 
@@ -84,30 +79,41 @@ export function arrowJS() {
 
         const component = renderToString(output)
         const currentState = activeRouteHandler.handler.state
-        const source = join(moduleCtx.projectRoot, activeRouteHandler.meta.path)
+        const out = clientMapByPath.get(activeRouteHandler.meta.path)
 
-        const out = clientMapByPath.get(source)
+        const headContext = moduleCtx.getHeadContext()
 
         return html(
           `
-          ${component}
-          <script type="application/json" id="_meta">
-            ${JSON.stringify(currentState, null, 2)}
-          </script>
-          
-          <script type="module">
-            import {state,render} from "/${join(
-              '.nomen',
-              basename(dirname(out)),
-              basename(out)
-            )}"
+            <html>
+            <head>
+            <meta charset="UTF-8" />
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1.0"
+            />
+            ${headContext.title ? `<title>${headContext.title}</title>` : ''}
+            </head>
+            <body>
+            <div id="app">${component}</div>
+            <script type="application/json" id="__nomen_meta">
+              ${JSON.stringify(currentState, null, 2)}
+            </script>
 
-            ${readFileSync(join(__dirname, 'rehydrate.js'), 'utf8')}
+            <script type="module" defer async>
+              import { state, render } from '/${join(
+                '.nomen',
+                basename(dirname(out)),
+                basename(out)
+              )}'
 
-            rehydrate(state,render)
-            
-          </script>
-        `,
+              ${readFileSync(join(__dirname, 'rehydrate.js'), 'utf8')}
+
+              rehydrate(state, render)
+            </script>
+            </body>
+            </html>
+          `,
           {
             headers: {
               'content-type': 'text/html',

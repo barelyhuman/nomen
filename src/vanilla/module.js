@@ -1,33 +1,23 @@
-import esbuildPlugin from '@barelyhuman/preact-island-plugins/esbuild'
 import { html } from '@hattip/response'
 import esbuild from 'esbuild'
-import { readFile } from 'node:fs/promises'
-import { basename, join } from 'node:path'
-import { h } from 'preact'
-import renderToString from 'preact-render-to-string'
+import { basename, dirname, join } from 'node:path'
 import { defineModule } from '../lib/module.js'
 import { esbuildClientNormalizer } from '../lib/plugins/client-normalizer.js'
 
 let clientMapByPath = new Map()
 
-export function preact() {
+export function vanilla() {
   defineModule({
-    name: 'nomen:builders:preact',
+    name: 'nomen:builders:vanilla',
     dependsOn: ['nomen:builder'],
     async onLoad(ctx) {
       const routeOutputs = []
 
-      const chunkOut = join(ctx.projectRoot, ctx.nomenOut, 'server-chunks')
+      const chunkOut = join(ctx.projectRoot, ctx.nomenOut, 'client-chunks')
 
       for (let entry of ctx.routerEntries) {
-        const sourceCode = entry.transformedSource
-        const preactImportRegex =
-          /(import)\s.*\s(from)\s(["'](preact\/jsx-runtime|preact\/jsx-dev-runtime)["'])/
-
-        if (preactImportRegex.test(sourceCode)) {
-          clientMapByPath.set(entry.path, join(chunkOut, basename(entry.path)))
-          routeOutputs.push(entry.path)
-        }
+        clientMapByPath.set(entry.path, join(chunkOut, basename(entry.path)))
+        routeOutputs.push(entry.path)
       }
 
       const userBuildConfig = ctx.client?.esbuildOptions || {}
@@ -39,23 +29,8 @@ export function preact() {
         allowOverwrite: true,
         format: 'esm',
         outdir: chunkOut,
-        external: ['preact'],
-        jsx: 'automatic',
-        jsxImportSource: 'preact',
-        loader: {
-          '.js': 'jsx',
-        },
         ...userBuildConfig,
         plugins: [
-          esbuildPlugin({
-            root: ctx.projectRoot,
-            baseURL: '/.nomen/client-chunks/',
-            atomic: true,
-            client: {
-              replaceParentNode: false,
-              output: join(ctx.projectRoot, '.nomen/client-chunks'),
-            },
-          }),
           esbuildClientNormalizer({
             loader: 'jsx',
             jsx: 'preserve',
@@ -66,12 +41,16 @@ export function preact() {
   })
 
   defineModule({
-    name: 'nomen:handlers:preact',
+    name: 'nomen:handlers:vanilla',
     dependsOn: ['nomen:handlers:root'],
     async onLoad(moduleCtx) {
       const handler = async ctx => {
         const activeRouteHandler = ctx.activeRouteHandler
 
+        const keys = []
+        for (let k of clientMapByPath.keys()) {
+          keys.push(k)
+        }
         if (!clientMapByPath.has(activeRouteHandler.meta.path)) {
           return await ctx.next()
         }
@@ -88,15 +67,7 @@ export function preact() {
           })
         }
 
-        const compiledOut = join(
-          moduleCtx.projectRoot,
-          moduleCtx.nomenOut,
-          'server-chunks',
-          basename(activeRouteHandler.meta.path)
-        )
-
-        const compiledModule = await import(compiledOut)
-        const moduleDef = compiledModule
+        const moduleDef = activeRouteHandler.handler
 
         let serverData = {}
         if ('onServer' in moduleDef) {
@@ -109,25 +80,39 @@ export function preact() {
 
         const headContext = moduleCtx.getHeadContext()
 
-        const ProxyComponent = compiledModule.render
-        const componentHTML = renderToString(
-          h(ProxyComponent, {
-            ...serverData.props,
-          })
-        )
+        const source = join(activeRouteHandler.meta.path)
+        const out = clientMapByPath.get(source)
 
         return html(
           `
             <html>
               <head>
-              <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 ${
                   headContext.title ? `<title>${headContext.title}</title>` : ''
                 }
               </head>
               <body>
-                <div id="app">${componentHTML}</div>
+                <div id="app"></div>
+                <script type="application/json" id="__nomen_meta">
+                        ${JSON.stringify(serverData, null, 2)}
+                </script>
+                <script type="module" async defer>
+                    import {render} from "/${join(
+                      '.nomen',
+                      basename(dirname(out)),
+                      basename(out)
+                    )}"
+
+                    try{
+                        const elem = document.getElementById("__nomen_meta")
+                        const props = JSON.parse(elem.innerText)
+                        render(props)
+                    }catch(err){
+                        // TODO: add a error overlay
+                        console.error(err)
+                    }
+
+                    
                 </script>
               </body>
             </html>

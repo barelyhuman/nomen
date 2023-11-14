@@ -1,11 +1,11 @@
-import esbuild from 'esbuild'
-import { dirname, extname, join } from 'node:path'
+import { lookup } from 'mrmime'
+import { createReadStream, existsSync, statSync } from 'node:fs'
+import { extname, join, resolve } from 'node:path'
 import { defineModule } from './lib/module.js'
 import { createRouter } from './lib/router.js'
-import { createReadStream, existsSync, statSync } from 'node:fs'
-import { lookup } from 'mrmime'
 
 let _routeConfig = {}
+const nomenCache = 'nomenCache' in global ? global.nomenCache : {}
 
 export default async function defineRoutes(routeConfig) {
   _routeConfig = routeConfig
@@ -17,40 +17,23 @@ defineModule({
   async onLoad(ctx) {
     const router = createRouter()
     ctx.router = router
-
-    const chunkOut = join(ctx.projectRoot, ctx.nomenOut, 'route-chunks')
-
-    const allEntries = Object.keys(_routeConfig).map(key => ({
-      source: join(ctx.projectRoot, _routeConfig[key]),
-      dist: _routeConfig[key].replace(dirname(_routeConfig[key]), chunkOut),
-    }))
-
-    ctx.routerEntries = allEntries
-
-    const esbuildConfig = ctx.esbuildConfig || {}
-    const plugins = esbuildConfig.plugins || []
-
-    await esbuild.build({
-      entryPoints: allEntries.map(x => x.source),
-      bundle: true,
-      platform: 'node',
-      format: 'esm',
-      splitting: true,
-      outdir: chunkOut,
-      ...esbuildConfig,
-      plugins,
-    })
+    ctx.routerEntries = []
 
     for (let key of Object.keys(_routeConfig)) {
       let urlPath = key
-      const _path = _routeConfig[key].replace(
-        dirname(_routeConfig[key]),
-        chunkOut
-      )
-      const handler = await import(_path)
-      router.add('all', urlPath, handler, {
-        path: _routeConfig[key],
-        outfile: _path,
+
+      const importFnString = _routeConfig[key].toString()
+      const filePath = importFnString.match(/(import)\(["'](.*)["']\)/)[2]
+
+      const module = await _routeConfig[key]()
+
+      ctx.routerEntries.push({
+        path: resolve(ctx.projectRoot, filePath),
+        module,
+        transformedSource: nomenCache[resolve(ctx.projectRoot, filePath)],
+      })
+      router.add('all', urlPath, module, {
+        path: resolve(ctx.projectRoot, filePath),
       })
     }
 
@@ -108,3 +91,9 @@ defineModule({
     )
   },
 })
+
+function jsToModuleString(code) {
+  return (
+    'data:text/javascript;base64,' + Buffer.from(code).toString('base64url')
+  )
+}

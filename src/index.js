@@ -14,9 +14,13 @@ export function createNomen({
   routes = {},
   modules = [],
   esbuildConfig = {},
+  transforms = {},
+  client = {},
 } = {}) {
   const kernel = {
-    esbuildConfig: esbuildConfig || {},
+    client: client,
+    esbuildConfig: esbuildConfig,
+    transforms: transforms,
   }
 
   defineRoutes(routes)

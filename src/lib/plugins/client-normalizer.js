@@ -25,30 +25,39 @@ export function esbuildClientNormalizer(transformOptions, modifier) {
           sourceType: 'module',
         })
 
-        let onServerOn
-
+        const nonExports = new Map()
         for (let nodeIndex in ast.body) {
           const node = ast.body[nodeIndex]
-          if (node.type == 'ExportNamedDeclaration' && node.declaration) {
+
+          if (node.type !== 'ExportNamedDeclaration') {
+            continue
+          }
+
+          if (node.declaration) {
             if (
               node.declaration.type == 'FunctionDeclaration' &&
               node.declaration.id.type == 'Identifier' &&
               node.declaration.id.name == 'onServer'
             ) {
-              onServerOn = nodeIndex
+              ast.body.splice(nodeIndex, 1)
             } else if (node.declaration.type == 'VariableDeclaration') {
               for (let decl of node.declaration.declarations) {
                 if (decl.id && decl.id.type === 'Identifier') {
                   if (decl.id.name == 'onServer') {
-                    onServerOn = nodeIndex
+                    ast.body.splice(nodeIndex, 1)
                   }
                 }
               }
             }
+          } else if (node.specifiers.length > 0) {
+            const onServerExportIndex = node.specifiers.findIndex(
+              x => x.local.name === 'onServer'
+            )
+            if (onServerExportIndex > -1) {
+              node.specifiers.splice(onServerExportIndex, 1)
+            }
           }
         }
-
-        ast.body = ast.body.filter((x, i) => i != onServerOn)
 
         let modAST = ast
         if (modifier && typeof modifier === 'function') {
