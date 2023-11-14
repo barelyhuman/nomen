@@ -7,7 +7,7 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "dev": "nomen entry.js",
+    "dev": "nomen --dev entry.js",
     "fix": "npx prettier --write .",
     "start": "node entry.js"
   },
