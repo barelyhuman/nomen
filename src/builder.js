@@ -1,6 +1,6 @@
 import { lookup } from 'mrmime'
 import { createReadStream, existsSync, statSync } from 'node:fs'
-import { extname, join, resolve } from 'node:path'
+import { extname, isAbsolute, join, resolve } from 'node:path'
 import { defineModule } from './lib/module.js'
 import { createRouter } from './lib/router.js'
 
@@ -23,12 +23,17 @@ defineModule({
       let urlPath = key
 
       const importFnString = _routeConfig[key].toString()
+
       const filePath = importFnString.match(/(import)\(["'](.*)["']\)/)[2]
 
       const module = await _routeConfig[key]()
+      console.log({ importFnString, filePath, module })
 
+      console.log({ x: ctx.routerEntries })
       ctx.routerEntries.push({
-        path: resolve(ctx.projectRoot, filePath),
+        path: isAbsolute(filePath)
+          ? filePath
+          : resolve(ctx.projectRoot, filePath),
         module,
         transformedSource: nomenCache[resolve(ctx.projectRoot, filePath)],
       })

@@ -1,4 +1,4 @@
-import { fileURLToPath } from 'mlly'
+import { fileURLToPath } from 'node:url'
 import { readFile } from 'node:fs/promises'
 import { extname } from 'node:path'
 import sucrase from 'sucrase'

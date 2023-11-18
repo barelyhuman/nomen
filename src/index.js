@@ -10,14 +10,17 @@ export { defineModule }
 
 import defineRoutes from './builder.js'
 
-export function createNomen({
-  routes = {},
-  modules = [],
-  esbuildConfig = {},
-  transforms = {},
-  client = {},
-} = {}) {
+export function createNomen(options = {}) {
+  const {
+    routes = {},
+    modules = [],
+    esbuildConfig = {},
+    transforms = {},
+    client = {},
+  } = options
+
   const kernel = {
+    options: options,
     client: client,
     esbuildConfig: esbuildConfig,
     transforms: transforms,
