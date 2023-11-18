@@ -17,7 +17,7 @@ export function preact() {
     async onLoad(ctx) {
       const routeOutputs = []
 
-      const chunkOut = join(ctx.projectRoot, ctx.nomenOut, 'server-chunks')
+      const chunkOut = join(ctx.packageRoot, ctx.nomenOut, 'server-chunks')
 
       for (let entry of ctx.routerEntries) {
         const sourceCode = entry.transformedSource
@@ -48,12 +48,12 @@ export function preact() {
         ...userBuildConfig,
         plugins: [
           esbuildPlugin({
-            root: ctx.projectRoot,
+            root: ctx.packageRoot,
             baseURL: '/.nomen/client-chunks/',
             atomic: true,
             client: {
               replaceParentNode: false,
-              output: join(ctx.projectRoot, '.nomen/client-chunks'),
+              output: join(ctx.packageRoot, '.nomen/client-chunks'),
             },
           }),
           esbuildClientNormalizer({
@@ -89,7 +89,7 @@ export function preact() {
         }
 
         const compiledOut = join(
-          moduleCtx.projectRoot,
+          moduleCtx.packageRoot,
           moduleCtx.nomenOut,
           'server-chunks',
           basename(activeRouteHandler.meta.path)

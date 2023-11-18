@@ -1,5 +1,6 @@
-import { isAbsolute, join } from 'node:path'
+import { dirname, isAbsolute, join } from 'node:path'
 import { defineModule } from './lib/module.js'
+import { findUp } from 'find-up'
 
 defineModule({
   name: 'nomen:root',
@@ -13,5 +14,11 @@ defineModule({
     } else {
       ctx.projectRoot = process.cwd()
     }
+
+    const pkgPath = await findUp('package.json', {
+      cwd: ctx.projectRoot,
+    })
+
+    ctx.packageRoot = dirname(pkgPath)
   },
 })

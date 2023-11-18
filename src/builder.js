@@ -27,9 +27,7 @@ defineModule({
       const filePath = importFnString.match(/(import)\(["'](.*)["']\)/)[2]
 
       const module = await _routeConfig[key]()
-      console.log({ importFnString, filePath, module })
 
-      console.log({ x: ctx.routerEntries })
       ctx.routerEntries.push({
         path: isAbsolute(filePath)
           ? filePath
@@ -64,12 +62,12 @@ defineModule({
         }
 
         const resourcePath = join(
-          ctx.projectRoot,
+          ctx.packageRoot,
           '.nomen/client-chunks',
           fpath
         )
 
-        const possiblePath = join(ctx.projectRoot, '.nomen', fpath)
+        const possiblePath = join(ctx.packageRoot, '.nomen', fpath)
 
         if (!existsSync(possiblePath)) {
           return new Response('Not found', {
@@ -78,7 +76,7 @@ defineModule({
         }
 
         const stat = statSync(possiblePath)
-        const st = createReadStream(join(ctx.projectRoot, '.nomen', fpath))
+        const st = createReadStream(join(ctx.packageRoot, '.nomen', fpath))
         const mimeType = lookup(extname(resourcePath))
 
         return new Response(st, {
