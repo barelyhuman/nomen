@@ -20,9 +20,7 @@ test('load dependent module first, irrespective of definition order', async () =
     name: 'basic-2',
     dependsOn: ['basic'],
     onLoad() {
-      if (ctx.value == 1) {
-        ctx.value = 3
-      }
+      if (ctx.value === 1) ctx.value = 3
     },
   })
   defineModule({

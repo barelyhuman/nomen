@@ -16,9 +16,9 @@ export function render() {
   `
 }
 
-export const onServer = (context, [id]) => {
+export function onServer(context, [id]) {
   state.id = id
-  state.count = 1000
+  state.count = 1003
   head({
     title: `Hello ${state.id}`,
   })

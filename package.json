@@ -22,12 +22,14 @@
   ],
   "scripts": {
     "fix": "prettier --write .",
+    "lint:fix": "eslint --fix .",
     "next": "bumpp",
     "prepare": "husky install",
     "test": "uvu",
     "test:ci": "c8 npm run test"
   },
   "lint-staged": {
+    "*.{js}": "eslint --fix",
     "*.{js,css,md,json}": "prettier --write"
   },
   "prettier": "@barelyhuman/prettier-config",
@@ -49,6 +51,8 @@
     "@barelyhuman/prettier-config": "^1.1.0",
     "bumpp": "^9.2.0",
     "c8": "^8.0.1",
+    "eslint": "^8.54.0",
+    "eslint-plugin-antfu": "^1.0.10",
     "husky": "^8.0.3",
     "lint-staged": "^15.0.2",
     "mlly": "^1.4.2",

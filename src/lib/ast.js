@@ -44,16 +44,13 @@ export function addImportToAST(ast) {
       // if yes, then do nothing.
       const hasExistingImport =
         child.specifiers.findIndex(x => {
-          if (named) {
+          if (named)
             return x.type === 'ImportSpecifier' && x.imported.name === name
-          } else {
+          else
             return x.type === 'ImportDefaultSpecifier' && x.local.name === name
-          }
         }) > -1
 
-      if (hasExistingImport) {
-        return
-      }
+      if (hasExistingImport) return
     }
 
     const importAST = astFromCode(

@@ -6,7 +6,9 @@ test('basic add route', async () => {
   const router = createRouter()
   const handler = () => {}
   router.add('get', '/hello', handler)
+
   const handlerD = router.find('get', '/hello')
+
   assert.equal(handlerD.route, '/hello')
   assert.equal(handlerD.handler, handler)
 })

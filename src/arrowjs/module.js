@@ -48,34 +48,28 @@ export function arrowJS() {
       const handler = async ctx => {
         const activeRouteHandler = ctx.activeRouteHandler
 
-        if (!clientMapByPath.has(activeRouteHandler.meta.path)) {
+        if (!clientMapByPath.has(activeRouteHandler.meta.path))
           return await ctx.next()
-        }
 
-        if (activeRouteHandler.params[0] === 'favicon') {
+        if (activeRouteHandler.params[0] === 'favicon')
           return new Response(null, {
             status: 404,
           })
-        }
 
-        if (!('render' in activeRouteHandler.handler)) {
+        if (!('render' in activeRouteHandler.handler))
           return new Response(null, {
             status: 404,
           })
-        }
 
-        if ('onServer' in activeRouteHandler.handler) {
+        if ('onServer' in activeRouteHandler.handler)
           await activeRouteHandler.handler.onServer(
             ctx,
             activeRouteHandler.params
           )
-        }
 
         const output = await activeRouteHandler.handler.render()
 
-        if (!('isT' in output)) {
-          return await ctx.next()
-        }
+        if (!('isT' in output)) return await ctx.next()
 
         const component = renderToString(output)
         const currentState = activeRouteHandler.handler.state

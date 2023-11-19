@@ -24,7 +24,7 @@ Think of it as another "One Man fullstack framework" in the JS land
 - [x] ESBuild Core Transformer
 - [x] Render Adaptor definition
 - [x] Rendering Engine
-  - [x] Vanilla JS Client Hydration 
+  - [x] Vanilla JS Client Hydration
 - [x] Bundle Chunker
 - [x] Plugin API (mostly just a layer atop esbuild's plugin API)
 - [x] Adaptors for various server renderers
@@ -38,6 +38,7 @@ Think of it as another "One Man fullstack framework" in the JS land
 - [ ] Faster Builds
 - [ ] Pre-rendering module spec
 - [ ] Typings (Last thing to do)
+- [ ] Cross Runtimes Execution
 
 ## Alternatives / Similar Solutions
 

@@ -23,27 +23,21 @@ defineModule({
 
       const key = toKey(method)
 
-      if (key in activeRouteHandler.handler) {
+      if (key in activeRouteHandler.handler)
         response = await activeRouteHandler.handler[key](
           ctx,
           activeRouteHandler.params
         )
-      } else if ('all' in activeRouteHandler.handler) {
+      else if ('all' in activeRouteHandler.handler)
         response = await activeRouteHandler.handler.all(
           ctx,
           activeRouteHandler.params
         )
-      } else {
-        response = await ctx.next()
-      }
+      else response = await ctx.next()
 
-      if (response instanceof Response) {
-        return response
-      }
+      if (response instanceof Response) return response
 
-      if (typeof response == 'object') {
-        return json(response)
-      }
+      if (typeof response === 'object') return json(response)
 
       return new Response('', {
         status: 404,

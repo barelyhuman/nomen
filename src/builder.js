@@ -48,18 +48,16 @@ defineModule({
         const method = context.request.method
         const fpath = params.join('/')
         // don't have to handle for requests that aren't GET / HEAD
-        if (method !== 'GET' && method !== 'HEAD') {
+        if (method !== 'GET' && method !== 'HEAD')
           return new Response(undefined, {
             status: 405,
           })
-        }
 
-        if (method == 'HEAD') {
+        if (method === 'HEAD')
           // If HEAD, then just end the response without changing status
           return new Response('', {
             status: 200,
           })
-        }
 
         const resourcePath = join(
           ctx.packageRoot,
@@ -69,11 +67,10 @@ defineModule({
 
         const possiblePath = join(ctx.packageRoot, '.nomen', fpath)
 
-        if (!existsSync(possiblePath)) {
+        if (!existsSync(possiblePath))
           return new Response('Not found', {
             status: 404,
           })
-        }
 
         const stat = statSync(possiblePath)
         const st = createReadStream(join(ctx.packageRoot, '.nomen', fpath))

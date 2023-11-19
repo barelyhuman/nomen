@@ -20,9 +20,7 @@ function add(routerMap, method, route, handler, meta = {}) {
   if (/\*/.test(route)) {
     isDynamic = true
 
-    if (/\*{2}/.test(route)) {
-      hasWildCard = true
-    }
+    if (/\*{2}/.test(route)) hasWildCard = true
   }
 
   let _regex = route
@@ -41,15 +39,12 @@ function add(routerMap, method, route, handler, meta = {}) {
   })
 
   handlers.sort((x, y) => {
-    if (x.hasWildCard && x.isDynamic && y.hasWildCard && y.isDynamic) {
+    if (x.hasWildCard && x.isDynamic && y.hasWildCard && y.isDynamic) return 0
+    else if (!x.hasWildCard && x.isDynamic && !y.hasWildCard && y.isDynamic)
       return 0
-    } else if (!x.hasWildCard && x.isDynamic && !y.hasWildCard && y.isDynamic) {
-      return 0
-    } else if (x.isDyanmic && !y.isDynamic) {
-      return 1
-    } else if (x.hasWildCard && !y.hasWildCard) {
-      return 1
-    }
+    else if (x.isDyanmic && !y.isDynamic) return 1
+    else if (x.hasWildCard && !y.hasWildCard) return 1
+
     return -1
   })
 
@@ -59,15 +54,11 @@ function add(routerMap, method, route, handler, meta = {}) {
 function find(routerMap, method, urlPath) {
   let params = []
   const handlerInfo = (routerMap.get(toKey(method)) || []).find(x => {
-    if (x.route == urlPath) {
-      return true
-    }
+    if (x.route === urlPath) return true
 
     const isDynamic = x.routeRegex.test(urlPath)
 
-    if (!isDynamic) {
-      return false
-    }
+    if (!isDynamic) return false
 
     params = urlPath.match(x.routeRegex).slice(1)
 
@@ -76,11 +67,10 @@ function find(routerMap, method, urlPath) {
 
   let result = null
 
-  if (handlerInfo) {
+  if (handlerInfo)
     result = Object.assign({}, handlerInfo, {
       params: params ? params.map(x => x.split('/')).flat(2) : [],
     })
-  }
 
   return result
 }

@@ -5,10 +5,8 @@ import sucrase from 'sucrase'
 
 global.nomenCache = {}
 
-export const load = async function (uri, context, fallback) {
-  if (uri.startsWith('node:')) {
-    return fallback(uri, context, fallback)
-  }
+export async function load(uri, context, fallback) {
+  if (uri.startsWith('node:')) return fallback(uri, context, fallback)
 
   const file = fileURLToPath(uri)
   const extn = extname(file)
@@ -20,7 +18,7 @@ export const load = async function (uri, context, fallback) {
       jsxRuntime: 'automatic',
     })
 
-    nomenCache[file] = output.code
+    global.nomenCache[file] = output.code
 
     return {
       format: context.format || 'commonjs',
@@ -32,6 +30,6 @@ export const load = async function (uri, context, fallback) {
   return fallback(uri, context, fallback)
 }
 
-export const resolve = function (ident, context, fallback) {
+export function resolve(ident, context, fallback) {
   return fallback(ident, context, fallback)
 }

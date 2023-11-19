@@ -20,9 +20,9 @@ let command = 'node'
 
 const { hasFlag: hasDevFlag } = consumeBoolean('--dev', nomenArgs)
 
-if (hasDevFlag) {
+if (hasDevFlag)
+  // tiny chokidar version here
   command = 'nodemon'
-}
 
 const _process = spawn(
   command,
@@ -49,12 +49,11 @@ await new Promise(resolve => {
 function consumeBoolean(flag, args) {
   let hasFlag = false
 
-  for (let arg of args) {
+  for (let arg of args)
     if (arg === flag) {
       hasFlag = true
       break
     }
-  }
 
   return {
     hasFlag,

@@ -11,9 +11,8 @@ export function defineModule(modDef) {
 export async function loadModules(context) {
   for (let currentModuleKey of moduleGraph.keys()) {
     const currentModuleDefinition = moduleGraph.get(currentModuleKey)
-    if (currentModuleDefinition.loaded) {
-      continue
-    }
+    if (currentModuleDefinition.loaded) continue
+
     for (let dependencyKey of currentModuleDefinition.deps) {
       const depModuleDefinition = moduleGraph.get(dependencyKey)
       if (depModuleDefinition.loaded) continue

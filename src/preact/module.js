@@ -1,7 +1,6 @@
 import esbuildPlugin from '@barelyhuman/preact-island-plugins/esbuild'
 import { html } from '@hattip/response'
 import esbuild from 'esbuild'
-import { readFile } from 'node:fs/promises'
 import { basename, join } from 'node:path'
 import { h } from 'preact'
 import renderToString from 'preact-render-to-string'
@@ -72,21 +71,18 @@ export function preact() {
       const handler = async ctx => {
         const activeRouteHandler = ctx.activeRouteHandler
 
-        if (!clientMapByPath.has(activeRouteHandler.meta.path)) {
+        if (!clientMapByPath.has(activeRouteHandler.meta.path))
           return await ctx.next()
-        }
 
-        if (activeRouteHandler.params[0] === 'favicon') {
+        if (activeRouteHandler.params[0] === 'favicon')
           return new Response(null, {
             status: 404,
           })
-        }
 
-        if (!('render' in activeRouteHandler.handler)) {
+        if (!('render' in activeRouteHandler.handler))
           return new Response(null, {
             status: 404,
           })
-        }
 
         const compiledOut = join(
           moduleCtx.packageRoot,
@@ -128,7 +124,6 @@ export function preact() {
               </head>
               <body>
                 <div id="app">${componentHTML}</div>
-                </script>
               </body>
             </html>
           `,

@@ -10,7 +10,7 @@ export function render({ ...props }) {
   )
 }
 
-export const onServer = (context, [id]) => {
+export function onServer(context, [id]) {
   head({
     title: 'Hello World',
   })
