@@ -1,7 +1,7 @@
 export function getAllPaths(obj) {
   let tails = []
   Object.keys(obj).forEach(k => {
-    if (typeof obj[k] === 'object') {
+    if (typeof obj[k] === 'object' && !Array.isArray(obj[k])) {
       const paths = getAllPaths(obj[k]).map(x => [k].concat(x).join('.'))
       tails = tails.concat(paths)
     } else {
@@ -9,6 +9,15 @@ export function getAllPaths(obj) {
     }
   })
   return tails
+}
+
+function pathFromArray(pathArr) {
+  return pathArr
+    .map(x => {
+      if (x.startsWith('.')) return '..' + x
+      return x
+    })
+    .join('.')
 }
 
 export function merge(obj, defaultObj) {
@@ -37,8 +46,16 @@ export function merge(obj, defaultObj) {
 function _parsePath(posPath) {
   let lexicalTokens = []
   let currentLex = ''
-  posPath.split('').map(token => {
+  const splits = posPath.split('')
+  splits.map((token, ind) => {
+    const prevToken = splits[ind - 1]
+
     if (token === '.') {
+      // two dots normally mean there's a dot in the key
+      if (prevToken === '.') {
+        currentLex = '.'
+        return
+      }
       lexicalTokens.push(currentLex)
       currentLex = ''
       return
@@ -72,7 +89,6 @@ function _safeGet(obj, key) {
 
 export function getPath(obj, obj_path) {
   const _path = _parsePath(obj_path)
-  console.log({ _path })
   let pointer = obj
   let partial = false
   _path.forEach((p, i) => {
@@ -90,6 +106,7 @@ export function getPath(obj, obj_path) {
 
 export function setPath(obj, obj_path, value) {
   const _path = _parsePath(obj_path)
+
   let pointer = obj
   let delegated = false
 
@@ -104,7 +121,7 @@ export function setPath(obj, obj_path, value) {
 
     if (!exists) {
       const nextO = {}
-      setPath(nextO, _path.slice(i + 1).join('.'), value)
+      setPath(nextO, pathFromArray(_path.slice(i + 1)), value)
       delegated = true
       pointer[p] = nextO
       return

@@ -48,24 +48,20 @@ export function vanilla() {
         const activeRouteHandler = ctx.activeRouteHandler
 
         const keys = []
-        for (let k of clientMapByPath.keys()) {
-          keys.push(k)
-        }
-        if (!clientMapByPath.has(activeRouteHandler.meta.path)) {
+        for (let k of clientMapByPath.keys()) keys.push(k)
+
+        if (!clientMapByPath.has(activeRouteHandler.meta.path))
           return await ctx.next()
-        }
 
-        if (activeRouteHandler.params[0] === 'favicon') {
+        if (activeRouteHandler.params[0] === 'favicon')
           return new Response(null, {
             status: 404,
           })
-        }
 
-        if (!('render' in activeRouteHandler.handler)) {
+        if (!('render' in activeRouteHandler.handler))
           return new Response(null, {
             status: 404,
           })
-        }
 
         const moduleDef = activeRouteHandler.handler
 
@@ -82,47 +78,42 @@ export function vanilla() {
 
         const source = join(activeRouteHandler.meta.path)
         const out = clientMapByPath.get(source)
+        const htmlBase = moduleCtx.options.template.entry
+          .replace(
+            moduleCtx.options.template.placeholders.head,
+            `
+              ${headContext.title ? `<title>${headContext.title}</title>` : ''}
+            `
+          )
+          .replace(moduleCtx.options.template.placeholders.content, '')
+          .replace(
+            moduleCtx.options.template.placeholders.scripts,
+            `<script type="application/json" id="__nomen_meta">
+                ${JSON.stringify(serverData, null, 2)}
+              </script>
+              <script type="module" async defer>
+                import { render } from '/${join(
+                  '.nomen',
+                  basename(dirname(out)),
+                  basename(out)
+                )}'
 
-        return html(
-          `
-            <html>
-              <head>
-                ${
-                  headContext.title ? `<title>${headContext.title}</title>` : ''
+                try {
+                  const elem = document.getElementById('__nomen_meta')
+                  const props = JSON.parse(elem.innerText)
+                  render(props)
+                } catch (err) {
+                  // TODO: add a error overlay
+                  console.error(err)
                 }
-              </head>
-              <body>
-                <div id="app"></div>
-                <script type="application/json" id="__nomen_meta">
-                        ${JSON.stringify(serverData, null, 2)}
-                </script>
-                <script type="module" async defer>
-                    import {render} from "/${join(
-                      '.nomen',
-                      basename(dirname(out)),
-                      basename(out)
-                    )}"
+              </script>`
+          )
 
-                    try{
-                        const elem = document.getElementById("__nomen_meta")
-                        const props = JSON.parse(elem.innerText)
-                        render(props)
-                    }catch(err){
-                        // TODO: add a error overlay
-                        console.error(err)
-                    }
-
-                    
-                </script>
-              </body>
-            </html>
-          `,
-          {
-            headers: {
-              'content-type': 'text/html',
-            },
-          }
-        )
+        return html(htmlBase, {
+          headers: {
+            'content-type': 'text/html',
+          },
+        })
       }
 
       moduleCtx.handlers.push(handler)

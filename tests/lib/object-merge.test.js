@@ -93,6 +93,23 @@ test('get tail paths nested level 2', () => {
   assert.equal(getAllPaths(obj), ['a', 'b.d', 'b.e.a'])
 })
 
+test("don't get tail paths for arrays", () => {
+  const obj = {
+    prop: [1, 2, 3],
+    b: {
+      prop: [1, 2, 3],
+    },
+  }
+  assert.equal(getAllPaths(obj), ['prop', 'b.prop'])
+})
+
+test('get tail paths for arbitrary keys', () => {
+  const obj = {
+    '.js': 1,
+  }
+  assert.equal(getAllPaths(obj), ['.js'])
+})
+
 test('merge simple', () => {
   const userConfig = {
     a: 1,
@@ -122,7 +139,7 @@ test('merge nested', () => {
     routes: {},
     modules: [],
     template: {
-      entry: ``,
+      entry: `hello world`,
       placeholders: {
         head: '<!-- app-head-placeholder -->',
         content: '<!-- app-content-placeholder -->',
@@ -145,6 +162,10 @@ test('merge nested', () => {
   assert.equal(
     mergedConfig.template.placeholders,
     defaultConfig.template.placeholders
+  )
+  assert.equal(
+    mergedConfig.client.esbuildOptions.loader['.js'],
+    defaultConfig.client.esbuildOptions.loader['.js']
   )
 })
 
