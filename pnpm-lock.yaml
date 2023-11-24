@@ -32,6 +32,9 @@ importers:
       astring:
         specifier: ^1.8.6
         version: 1.8.6
+      defu:
+        specifier: ^6.1.3
+        version: 6.1.3
       esbuild:
         specifier: ^0.19.5
         version: 0.19.5
@@ -63,9 +66,6 @@ importers:
       c8:
         specifier: ^8.0.1
         version: 8.0.1
-      defu:
-        specifier: ^6.1.3
-        version: 6.1.3
       eslint:
         specifier: ^8.54.0
         version: 8.54.0
@@ -106,6 +106,9 @@ importers:
       '@barelyhuman/prettier-config':
         specifier: ^1.1.0
         version: 1.1.0
+      '@unhead/schema':
+        specifier: ^1.8.8
+        version: 1.8.8
       esbuild-plugin-node-externals:
         specifier: ^1.0.1
         version: 1.0.1(esbuild@0.19.5)
@@ -804,6 +807,13 @@ packages:
 
   /@ungap/structured-clone@1.2.0:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
+    dev: true
+
+  /@unhead/schema@1.8.8:
+    resolution: {integrity: sha512-xuhNW4osVNLW1yQSbdInZ8YGiXVTi1gjF8rK1E4VnODpWLg8XOq0OpoCbdIlCH4X4A0Ee0UQGRyzkuuVZlrSsQ==}
+    dependencies:
+      hookable: 5.5.3
+      zhead: 2.2.4
     dev: true
 
   /@whatwg-node/events@0.1.1:
@@ -1721,6 +1731,10 @@ packages:
     dependencies:
       function-bind: 1.1.2
     dev: false
+
+  /hookable@5.5.3:
+    resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
+    dev: true
 
   /html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
@@ -2818,3 +2832,7 @@ packages:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
     dev: false
+
+  /zhead@2.2.4:
+    resolution: {integrity: sha512-8F0OI5dpWIA5IGG5NHUg9staDwz/ZPxZtvGVf01j7vHqSyZ0raHY+78atOVxRqb73AotX22uV1pXt3gYSstGag==}
+    dev: true

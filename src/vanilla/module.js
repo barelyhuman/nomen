@@ -3,6 +3,7 @@ import esbuild from 'esbuild'
 import { basename, dirname, join } from 'node:path'
 import { defineModule } from '../lib/module.js'
 import { esbuildClientNormalizer } from '../lib/plugins/client-normalizer.js'
+import { stringify } from '../head/utils.js'
 
 let clientMapByPath = new Map()
 
@@ -76,19 +77,16 @@ export function vanilla() {
 
         const headContext = moduleCtx.getHeadContext()
 
+        const headHTML = stringify(headContext)
+
         const source = join(activeRouteHandler.meta.path)
         const out = clientMapByPath.get(source)
         const htmlBase = moduleCtx.options.template.entry
-          .replace(
-            moduleCtx.options.template.placeholders.head,
-            `
-              ${headContext.title ? `<title>${headContext.title}</title>` : ''}
-            `
-          )
+          .replace(moduleCtx.options.template.placeholders.head, headHTML)
           .replace(moduleCtx.options.template.placeholders.content, '')
           .replace(
             moduleCtx.options.template.placeholders.scripts,
-            `<script type="application/json" id="__nomen_meta">
+            ` <script type="application/json" id="__nomen_meta">
                 ${JSON.stringify(serverData, null, 2)}
               </script>
               <script type="module" async defer>

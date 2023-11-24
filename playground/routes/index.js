@@ -1,5 +1,16 @@
 import { join } from 'node:path'
 import { h, mount } from '../lib/create-element.js'
+import { head } from 'nomen-js/head'
+
+head({
+  title: 'hello world',
+  links: [
+    {
+      rel: 'stylesheet',
+      href: './hello.css',
+    },
+  ],
+})
 
 export function render({ props }) {
   const rawComponent = h(

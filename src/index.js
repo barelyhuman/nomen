@@ -12,7 +12,7 @@ export { defineModule }
 
 import { join } from 'node:path'
 import defineRoutes from './builder.js'
-import { merge } from './lib/object.js'
+import { defu } from 'defu'
 
 const defaultEntry = join(process.cwd(), 'src', './index.html')
 
@@ -39,7 +39,7 @@ const defaultConfig = {
 }
 
 export function createNomen(options = {}) {
-  const mergedConfig = merge(options, defaultConfig)
+  const mergedConfig = defu(options, defaultConfig)
   const { routes, modules, client = {} } = mergedConfig
 
   const kernel = {
