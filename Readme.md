@@ -30,15 +30,16 @@ Think of it as another "One Man fullstack framework" in the JS land
 - [x] Adaptors for various server renderers
   - [x] ArrowJS
   - [x] Preact
+  - [x] VanillaJS
 - [ ] Page Head Support
-- [ ] Custom Template (_index.html_)
+- [x] Custom Template (_index.html_)
 - [ ] Custom 404 Page
 - [ ] Custom Error Page
 - [ ] Usage Documentation
 - [ ] Faster Builds
 - [ ] Pre-rendering module spec
 - [ ] Typings (Last thing to do)
-- [ ] Cross Runtimes Execution
+- [ ] Cross Runtimes Execution (Node, Deno, Bun, etc)
 
 ## Alternatives / Similar Solutions
 
