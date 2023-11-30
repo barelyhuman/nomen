@@ -8,7 +8,7 @@ import fs from 'node:fs'
 
 const nomen = createNomen({
   routes: routes,
-  modules: [vanilla, preact, arrowJS],
+  modules: [preact, arrowJS, vanilla],
   template: {
     entry: fs.readFileSync('./index.html', 'utf8'),
   },
