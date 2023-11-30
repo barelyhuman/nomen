@@ -14,28 +14,6 @@ const nomen = createNomen({
   },
 })
 
-// const nomen = createNomen({
-//   routes: routes,
-//   modules: [arrowJS, preact, vanilla],
-// //   template: {
-// //     // entry: fs.readFileSync('./index.html', 'utf8'),
-// //     // placeholders: {
-// //     //   head: '<!-- app-head-placeholder -->',
-// //     //   content: '<!-- app-content-placeholder -->',
-// //     //   scripts: '<!-- app-scripts-placeholder -->',
-// //     // },
-// //   },
-//   client: {
-//     esbuildOptions: {
-//       jsx: 'automatic',
-//       jsxImportSource: 'preact',
-//       loader: {
-//         '.js': 'jsx',
-//       },
-//     },
-//   },
-// })
-
 await nomen.boot()
 
 createServer(nomen.handler)
