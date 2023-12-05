@@ -47,3 +47,32 @@ Think of it as another "One Man fullstack framework" in the JS land
   Typescript(Javascript)
 - [rakkasjs](http://rakkasjs.org) - A react based framework built on
   [vite](https://vite.dev) and [hattip](https://hattipjs.org)
+
+## Development
+
+- Make sure you have `nvm` installed
+
+**Setup Node Version**
+
+```sh
+nvm install
+nvm use
+node -v // v18.16.0
+```
+
+**Setup repository and dependencies**
+
+```sh
+npm i -g pnpm@8.6.2
+pnpm i
+```
+
+**Run Development** There's no build tooling, the repository is just a
+collection of ESM modules that get imported by the node runtime.
+
+**Run Playground**
+
+```sh
+cd playground
+pnpm dev
+```

@@ -20,6 +20,7 @@
   "files": [
     "src"
   ],
+  "packageManager": "pnpm@8.6.2",
   "scripts": {
     "fix": "prettier --write .",
     "lint:fix": "eslint --fix .",
