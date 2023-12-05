@@ -57,7 +57,7 @@ Think of it as another "One Man fullstack framework" in the JS land
 ```sh
 nvm install
 nvm use
-node -v // v18.16.0
+node -v # v18.16.0
 ```
 
 **Setup repository and dependencies**
