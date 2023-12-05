@@ -50,7 +50,7 @@ Think of it as another "One Man fullstack framework" in the JS land
 
 ## Development
 
-- Make sure you have `nvm` installed
+- Make sure you have [nvm](https://github.com/nvm-sh/nvm) installed
 
 **Setup Node Version**
 
