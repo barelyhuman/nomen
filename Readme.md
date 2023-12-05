@@ -67,8 +67,10 @@ npm i -g pnpm@8.6.2
 pnpm i
 ```
 
-**Run Development** There's no build tooling, the repository is just a
-collection of ESM modules that get imported by the node runtime.
+**Run Development**
+
+There's no build tooling, the repository is just a collection of ESM modules
+that get imported by the node runtime.
 
 **Run Playground**
 
