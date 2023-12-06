@@ -55,6 +55,7 @@ export function createNomen(options = {}) {
         mod()
       })
       await loadModules(kernel)
+      await kernel.builder.build()
     },
     handler: context => {
       const path = new URL(context.request.url).pathname
