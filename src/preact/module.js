@@ -31,7 +31,7 @@ export function preact() {
 
       const userBuildConfig = ctx.client?.esbuildOptions || {}
 
-      await esbuild.build({
+      ctx.builder.add('preact', {
         entryPoints: routeOutputs,
         bundle: true,
         platform: 'node',
