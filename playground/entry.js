@@ -1,6 +1,7 @@
 import { createNomen } from 'nomen-js'
 import { arrowJS } from 'nomen-js/arrow'
 import { preact } from 'nomen-js/preact'
+import { hmr } from 'nomen-js/hmr'
 import routes from './routes.js'
 import { createServer } from '@hattip/adapter-node'
 import { vanilla } from 'nomen-js/vanilla'
@@ -8,7 +9,7 @@ import fs from 'node:fs'
 
 const nomen = createNomen({
   routes: routes,
-  modules: [preact, arrowJS, vanilla],
+  modules: [hmr, preact, arrowJS, vanilla],
   template: {
     entry: fs.readFileSync('./index.html', 'utf8'),
   },

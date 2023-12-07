@@ -16,6 +16,7 @@ export function arrowJS() {
     name: 'nomen:builders:arrowjs',
     dependsOn: ['nomen:builder'],
     async onLoad(ctx) {
+      console.log('here')
       const routeOutputs = []
 
       const chunkOut = join(ctx.packageRoot, ctx.nomenOut, 'client-chunks')

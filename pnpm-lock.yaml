@@ -20,6 +20,9 @@ importers:
       '@hattip/response':
         specifier: ^0.0.35
         version: 0.0.35
+      '@plainjs/hmr':
+        specifier: file:../hmr
+        version: file:../hmr
       acorn:
         specifier: ^8.11.2
         version: 8.11.2
@@ -2817,4 +2820,9 @@ packages:
   /yocto-queue@1.0.0:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
+    dev: false
+
+  file:../hmr:
+    resolution: {directory: ../hmr, type: directory}
+    name: '@plainjs/hmr'
     dev: false

@@ -11,6 +11,7 @@
   },
   "exports": {
     ".": "./src/index.js",
+    "./hmr": "./src/hmr/module.js",
     "./arrow": "./src/arrowjs/module.js",
     "./preact": "./src/preact/module.js",
     "./vanilla": "./src/vanilla/module.js",
@@ -34,6 +35,7 @@
   },
   "prettier": "@barelyhuman/prettier-config",
   "dependencies": {
+    "@plainjs/hmr": "file:../hmr",
     "@barelyhuman/astring-jsx": "^2.0.1",
     "@barelyhuman/preact-island-plugins": "^0.1.4",
     "@hattip/compose": "^0.0.35",
