@@ -33,7 +33,7 @@ Think of it as another "One Man fullstack framework" in the JS land
   - [x] VanillaJS
 - [ ] Page Head Support
 - [x] Custom Template (_index.html_)
-- [ ] Custom 404 Page
+- [x] Custom 404 Page
 - [ ] Custom Error Page
 - [ ] Usage Documentation
 - [ ] Faster Builds

@@ -5,6 +5,7 @@ import './kernel.js'
 import { defineModule, loadModules } from './lib/module.js'
 
 import fs from 'node:fs'
+import { readFile } from 'node:fs/promises'
 
 import { compose } from '@hattip/compose'
 
@@ -15,6 +16,8 @@ import defineRoutes from './builder.js'
 import { defu } from 'defu'
 
 const defaultEntry = join(process.cwd(), 'src', './index.html')
+
+const html = String.raw
 
 const defaultConfig = {
   routes: {},
@@ -27,6 +30,17 @@ const defaultConfig = {
       scripts: '<!-- app-scripts-placeholder -->',
     },
   },
+  routeNotFoundTemplate: html`
+    <html>
+      <head>
+        <title>Not Found</title>
+      </head>
+      <body>
+        <h1>404</h1>
+        <p>Not Found at all</p>
+      </body>
+    </html>
+  `,
   client: {
     esbuildOptions: {
       jsx: 'automatic',
@@ -57,13 +71,18 @@ export function createNomen(options = {}) {
       await loadModules(kernel)
       await kernel.builder.build()
     },
-    handler: context => {
+    handler: async context => {
       const path = new URL(context.request.url).pathname
       const baseRouteHandler = kernel.router.find('all', path)
-      if (!baseRouteHandler)
-        return new Response('Not Found', {
+      if (!baseRouteHandler) {
+        const htmlRawContent = kernel.options.routeNotFoundTemplate
+        return new Response(htmlRawContent, {
+          headers: {
+            'content-type': 'text/html',
+          },
           status: 404,
         })
+      }
 
       context.activeRouteHandler = baseRouteHandler
       if (baseRouteHandler.meta.disableMiddleware)
