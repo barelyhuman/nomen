@@ -2,6 +2,12 @@
 
 `nomen` is a minimal but extensible framework for server based applications.
 
+- [nomen-js](#nomen-js)
+  - [Goal](#goal)
+- [Todo](#todo)
+- [Alternatives / Similar Solutions](#alternatives--similar-solutions)
+- [Development](#development)
+
 ## Goal
 
 A no build solution with pure ESM to write API's and Frontend Interactive Views
@@ -41,14 +47,14 @@ Think of it as another "One Man fullstack framework" in the JS land
 - [ ] Typings (Last thing to do)
 - [ ] Cross Runtimes Execution (Node, Deno, Bun, etc)
 
-## Alternatives / Similar Solutions
+# Alternatives / Similar Solutions
 
 - [AdonisJS](http://adonisjs.com) - no-nonsense full stack framework for
   Typescript(Javascript)
 - [rakkasjs](http://rakkasjs.org) - A react based framework built on
   [vite](https://vite.dev) and [hattip](https://hattipjs.org)
 
-## Development
+# Development
 
 - Make sure you have [nvm](https://github.com/nvm-sh/nvm) installed
 
