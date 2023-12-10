@@ -1,6 +1,5 @@
 import esbuildPlugin from '@barelyhuman/preact-island-plugins/esbuild'
 import { html } from '@hattip/response'
-import esbuild from 'esbuild'
 import { basename, join } from 'node:path'
 import { h } from 'preact'
 import renderToString from 'preact-render-to-string'

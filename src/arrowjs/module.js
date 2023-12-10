@@ -1,6 +1,5 @@
 import { html } from '@hattip/response'
 import { renderToString } from 'arrow-render-to-string'
-import esbuild from 'esbuild'
 import { readFileSync } from 'node:fs'
 import { basename, dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
