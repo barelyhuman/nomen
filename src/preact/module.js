@@ -1,9 +1,9 @@
 import esbuildPlugin from '@barelyhuman/preact-island-plugins/esbuild'
 import { html } from '@hattip/response'
-import esbuild from 'esbuild'
-import { basename, join } from 'node:path'
+import { basename, dirname, join } from 'node:path'
 import { h } from 'preact'
 import renderToString from 'preact-render-to-string'
+import { stringify } from '../head/utils.js'
 import { defineModule } from '../lib/module.js'
 import { esbuildClientNormalizer } from '../lib/plugins/client-normalizer.js'
 
@@ -31,7 +31,7 @@ export function preact() {
 
       const userBuildConfig = ctx.client?.esbuildOptions || {}
 
-      await esbuild.build({
+      ctx.builder.add('preact', {
         entryPoints: routeOutputs,
         bundle: true,
         platform: 'node',
@@ -112,27 +112,20 @@ export function preact() {
           })
         )
 
-        return html(
-          `
-            <html>
-              <head>
-              <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                ${
-                  headContext.title ? `<title>${headContext.title}</title>` : ''
-                }
-              </head>
-              <body>
-                <div id="app">${componentHTML}</div>
-              </body>
-            </html>
-          `,
-          {
-            headers: {
-              'content-type': 'text/html',
-            },
-          }
-        )
+        const headHTML = stringify(headContext)
+
+        const htmlBase = moduleCtx.options.template.entry
+          .replace(moduleCtx.options.template.placeholders.head, headHTML)
+          .replace(
+            moduleCtx.options.template.placeholders.content,
+            componentHTML
+          )
+
+        return html(htmlBase, {
+          headers: {
+            'content-type': 'text/html',
+          },
+        })
       }
 
       moduleCtx.handlers.push(handler)

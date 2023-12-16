@@ -3,6 +3,7 @@ import { createReadStream, existsSync, statSync } from 'node:fs'
 import { extname, isAbsolute, join, resolve } from 'node:path'
 import { defineModule } from './lib/module.js'
 import { createRouter } from './lib/router.js'
+import { createContext } from 'esbuild-multicontext'
 
 let _routeConfig = {}
 const nomenCache = 'nomenCache' in global ? global.nomenCache : {}
@@ -16,6 +17,8 @@ defineModule({
   dependsOn: ['nomen:root', 'nomen:internal:html:head'],
   async onLoad(ctx) {
     const router = createRouter()
+
+    ctx.builder = createContext()
     ctx.router = router
     ctx.routerEntries = []
 

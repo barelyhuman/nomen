@@ -2,6 +2,12 @@
 
 `nomen` is a minimal but extensible framework for server based applications.
 
+- [nomen-js](#nomen-js)
+  - [Goal](#goal)
+- [Todo](#todo)
+- [Alternatives / Similar Solutions](#alternatives--similar-solutions)
+- [Development](#development)
+
 ## Goal
 
 A no build solution with pure ESM to write API's and Frontend Interactive Views
@@ -33,7 +39,7 @@ Think of it as another "One Man fullstack framework" in the JS land
   - [x] VanillaJS
 - [ ] Page Head Support
 - [x] Custom Template (_index.html_)
-- [ ] Custom 404 Page
+- [x] Custom 404 Page
 - [ ] Custom Error Page
 - [ ] Usage Documentation
 - [ ] Faster Builds
@@ -41,9 +47,40 @@ Think of it as another "One Man fullstack framework" in the JS land
 - [ ] Typings (Last thing to do)
 - [ ] Cross Runtimes Execution (Node, Deno, Bun, etc)
 
-## Alternatives / Similar Solutions
+# Alternatives / Similar Solutions
 
 - [AdonisJS](http://adonisjs.com) - no-nonsense full stack framework for
   Typescript(Javascript)
 - [rakkasjs](http://rakkasjs.org) - A react based framework built on
   [vite](https://vite.dev) and [hattip](https://hattipjs.org)
+
+# Development
+
+- Make sure you have [nvm](https://github.com/nvm-sh/nvm) installed
+
+**Setup Node Version**
+
+```sh
+nvm install
+nvm use
+node -v # v18.16.0
+```
+
+**Setup repository and dependencies**
+
+```sh
+npm i -g pnpm@8.6.2
+pnpm i
+```
+
+**Run Development**
+
+There's no build tooling, the repository is just a collection of ESM modules
+that get imported by the node runtime.
+
+**Run Playground**
+
+```sh
+cd playground
+pnpm dev
+```

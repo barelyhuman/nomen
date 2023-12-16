@@ -3,15 +3,15 @@ import { h, mount } from '../lib/create-element.js'
 import { head } from 'nomen-js/head'
 console.log('here', import.meta)
 
-head({
-  title: 'hello world',
-  links: [
-    {
-      rel: 'stylesheet',
-      href: './hello.css',
-    },
-  ],
-})
+// head({
+//   title: 'hello world',
+//   links: [
+//     {
+//       rel: 'stylesheet',
+//       href: './hello.css',
+//     },
+//   ],
+// })
 
 export function render({ props }) {
   const rawComponent = h(
