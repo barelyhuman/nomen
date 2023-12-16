@@ -43,55 +43,13 @@ defineModule({
       })
     }
 
-    // hidden handler for managing assets
-    router.add(
-      'all',
-      '/.nomen/**',
-      (context, params) => {
-        const method = context.request.method
-        const fpath = params.join('/')
-        // don't have to handle for requests that aren't GET / HEAD
-        if (method !== 'GET' && method !== 'HEAD')
-          return new Response(undefined, {
-            status: 405,
-          })
-
-        if (method === 'HEAD')
-          // If HEAD, then just end the response without changing status
-          return new Response('', {
-            status: 200,
-          })
-
-        const resourcePath = join(
-          ctx.packageRoot,
-          '.nomen/client-chunks',
-          fpath
-        )
-
-        const possiblePath = join(ctx.packageRoot, '.nomen', fpath)
-
-        if (!existsSync(possiblePath))
-          return new Response('Not found', {
-            status: 404,
-          })
-
-        const stat = statSync(possiblePath)
-        const st = createReadStream(join(ctx.packageRoot, '.nomen', fpath))
-        const mimeType = lookup(extname(resourcePath))
-
-        return new Response(st, {
-          headers: {
-            'Content-Length': stat.size,
-            'Cache-Control': 'no-cache',
-            'Connection': 'keep-alive',
-            'Content-Type': mimeType,
-          },
-        })
-      },
-      {
+    // handle assets
+    for (let asset of ctx.options.assets) {
+      const assetURL = join('/', asset.baseURL, '**')
+      router.add('all', assetURL, staticServe(ctx, asset, ctx.projectRoot), {
         disableMiddleware: true,
-      }
-    )
+      })
+    }
   },
 })
 
@@ -99,4 +57,42 @@ function jsToModuleString(code) {
   return (
     'data:text/javascript;base64,' + Buffer.from(code).toString('base64url')
   )
+}
+
+function staticServe(ctx, asset, basePath) {
+  return (context, params) => {
+    const method = context.request.method
+    const fpath = params.join('/')
+    // don't have to handle for requests that aren't GET / HEAD
+    if (method !== 'GET' && method !== 'HEAD')
+      return new Response(undefined, {
+        status: 405,
+      })
+
+    if (method === 'HEAD')
+      // If HEAD, then just end the response without changing status
+      return new Response('', {
+        status: 200,
+      })
+
+    const possiblePath = join(basePath, asset.dir, fpath)
+
+    if (!existsSync(possiblePath))
+      return new Response('Not found', {
+        status: 404,
+      })
+
+    const stat = statSync(possiblePath)
+    const st = createReadStream(possiblePath)
+    const mimeType = lookup(extname(possiblePath))
+
+    return new Response(st, {
+      headers: {
+        'Content-Length': stat.size,
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'Content-Type': mimeType,
+      },
+    })
+  }
 }
