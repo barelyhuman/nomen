@@ -16,16 +16,14 @@ if (argSeparator > -1) {
   entryFile = nomenArgs[nomenArgs.length - 1]
 }
 
-let command = 'node'
+let baseCommand = 'node'
 
 const { hasFlag: hasDevFlag } = consumeBoolean('--dev', nomenArgs)
 
-if (hasDevFlag)
-  // tiny chokidar version here
-  command = 'nodemon'
+if (hasDevFlag) process.env.NOMEN_DEV = true
 
 const _process = spawn(
-  command,
+  baseCommand,
   ['--loader', 'nomen-js/loader', ...nodeArgs.concat(entryFile)],
   {
     stdio: 'pipe',

@@ -24,4 +24,12 @@ export async function loadModules(context) {
     currentModuleDefinition.loaded = true
     moduleGraph.set(currentModuleKey, currentModuleDefinition)
   }
+
+  for (let currentModuleKey of moduleGraph.keys()) {
+    const currentModuleDefinition = moduleGraph.get(currentModuleKey)
+    const modDef = currentModuleDefinition.mod
+    if (!modDef.onBooted) continue
+
+    await modDef.onBooted(context)
+  }
 }

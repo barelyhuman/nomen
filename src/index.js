@@ -2,6 +2,7 @@ import './builder.js'
 import './handlers.js'
 import './head/module.js'
 import './kernel.js'
+import './watcher.js'
 import { defineModule, loadModules } from './lib/module.js'
 
 import fs from 'node:fs'
@@ -59,6 +60,7 @@ export function createNomen(options = {}) {
   const kernel = {
     options: mergedConfig,
     client: client,
+    env: process.env,
   }
 
   defineRoutes(routes)
