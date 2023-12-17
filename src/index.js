@@ -3,6 +3,7 @@ import './handlers.js'
 import './head/module.js'
 import './kernel.js'
 import './watcher.js'
+import './socket/module.js'
 import { defineModule, loadModules } from './lib/module.js'
 
 import fs from 'node:fs'
@@ -66,10 +67,11 @@ export function createNomen(options = {}) {
   defineRoutes(routes)
 
   return {
-    boot: async () => {
+    boot: async server => {
       modules.forEach(mod => {
         mod()
       })
+      kernel.server = server
       await loadModules(kernel)
       await kernel.builder.build()
     },

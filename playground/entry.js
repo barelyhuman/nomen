@@ -14,9 +14,10 @@ const nomen = createNomen({
   },
 })
 
-await nomen.boot()
+const server = createServer(nomen.handler)
+await nomen.boot(server)
 
-createServer(nomen.handler)
+server
   .listen(3000, () => {
     console.log(`Listening on http://localhost:3000`)
   })

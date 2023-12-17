@@ -49,7 +49,8 @@
     "find-up": "^7.0.0",
     "mrmime": "^1.0.1",
     "sucrase": "^3.34.0",
-    "tiny-glob": "^0.2.9"
+    "tiny-glob": "^0.2.9",
+    "ws": "^8.15.1"
   },
   "devDependencies": {
     "@barelyhuman/prettier-config": "^1.1.0",
