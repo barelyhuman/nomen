@@ -20,9 +20,10 @@ let command = 'node'
 
 const { hasFlag: hasDevFlag } = consumeBoolean('--dev', nomenArgs)
 
-if (hasDevFlag)
-  // tiny chokidar version here
-  command = 'nodemon'
+// With hmr, would we need nodemon?
+// if (hasDevFlag)
+//   // TODO: tinylibs library chokidar
+//   command = 'nodemon'
 
 const _process = spawn(
   command,
