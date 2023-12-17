@@ -1,5 +1,6 @@
 import { defineModule } from '../lib/module.js'
-import { WebSocketServer, OPEN } from 'ws'
+import { WebSocketServer } from 'ws'
+import ws from 'ws'
 
 function connectionHandler() {
   return client => {
@@ -35,20 +36,15 @@ defineModule({
 
     ctx.socket.broadcast = data => {
       ctx.socket.clients.forEach(c => {
-        if (c.readyState !== OPEN) return
+        if (c.readyState !== ws.OPEN) return
         c.send(JSON.stringify(data))
       })
     }
 
-    setTimeout(() => {
-      ctx.socket.clients.forEach(c =>
-        c.send(JSON.stringify({ type: 'reload' }))
-      )
-    }, 3000)
-
     ctx.socket.getConnectionScript = ''
-    if (ctx.env.NOMEN_DEV)
-      ctx.socket.getConnectionScript = () => `<script>
+    if (!ctx.env.NOMEN_DEV) return
+
+    ctx.socket.getConnectionScript = () => `<script>
         const serverAddress = window.location.hostname;
         const socket = new WebSocket(
           \`ws://\${serverAddress}:${ctx.socket.runningOnPort}\`
@@ -65,5 +61,29 @@ defineModule({
           });
 
       </script>`
+
+    // Keep track of the watcher
+    /**@type {chokidar.FSWatcher}*/
+    const watcher = ctx.watcher
+
+    const debounce = (fn, delay) => {
+      let id
+      return (...args) => {
+        if (id) clearTimeout(id)
+        id = setTimeout(() => {
+          fn(...args)
+        }, delay)
+      }
+    }
+
+    const debouncedSend = debounce(data => {
+      ctx.socket.broadcast(data)
+    }, 250)
+
+    watcher.on('all', async (event, file) => {
+      if (event === 'add') return
+
+      debouncedSend({ type: 'reload' })
+    })
   },
 })

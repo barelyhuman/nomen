@@ -1,22 +1,18 @@
-import { defineModule } from './lib/module.js'
 import chokidar from 'chokidar'
+import { defineModule } from './lib/module.js'
 
 defineModule({
   name: 'nomen:watcher',
-  dependsOn: ['nomen:root'],
+  dependsOn: ['nomen:builder'],
   async onLoad(ctx) {
     if (!ctx.env.NOMEN_DEV) return
 
-    const watcherInstance = chokidar.watch()
-    ctx.watcher = watcherInstance
-  },
-  onBooted(ctx) {
-    if (!ctx.env.NOMEN_DEV) return
-
-    /**@type {chokidar.FSWatcher}*/
-    const watcher = ctx.watcher
-    watcher.on('all', change => {
-      console.log({ change })
+    const watcherInstance = chokidar.watch('.', {
+      ignored: [/.nomen/, /node_modules/],
+      awaitWriteFinish: true,
     })
+
+    watcherInstance.add('./**/*.js')
+    ctx.watcher = watcherInstance
   },
 })

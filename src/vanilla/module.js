@@ -64,7 +64,9 @@ export function vanilla() {
             status: 404,
           })
 
-        const moduleDef = activeRouteHandler.handler
+        const moduleDef = await import(
+          activeRouteHandler.meta.path + '?' + Date.now()
+        )
 
         let serverData = {}
         if ('onServer' in moduleDef) {
