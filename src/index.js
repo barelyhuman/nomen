@@ -2,7 +2,9 @@ import './builder.js'
 import './handlers.js'
 import './head/module.js'
 import './kernel.js'
-import { defineModule, loadModules } from './lib/module.js'
+import './watcher.js'
+import './socket/module.js'
+import { defineModule, loadModules, reloadModules } from './lib/module.js'
 
 import fs from 'node:fs'
 import { readFile } from 'node:fs/promises'
@@ -74,16 +76,19 @@ export function createNomen(options = {}) {
   const kernel = {
     options: mergedConfig,
     client: client,
+    env: process.env,
   }
 
   defineRoutes(routes)
 
   return {
-    boot: async () => {
+    boot: async server => {
       modules.forEach(mod => {
         mod()
       })
+      kernel.server = server
       await loadModules(kernel)
+      if (kernel.env.NOMEN_DEV) await kernel.builder.watch()
       await kernel.builder.build()
     },
     handler: async context => {

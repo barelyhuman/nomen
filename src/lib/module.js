@@ -29,5 +29,18 @@ export async function loadModules(context) {
       mergedErr.stack += `\n${err.stack}`
       throw mergedErr
     }
-  
+  }
+
+  for (let currentModuleKey of moduleGraph.keys()) {
+    try{
+      const currentModuleDefinition = moduleGraph.get(currentModuleKey)
+      const modDef = currentModuleDefinition.mod
+      if (!modDef.onBooted) continue
+      await modDef.onBooted(context)
+    }catch(err){
+      const mergedErr = new Error(`Error booting module: ${currentModuleKey}`)
+      mergedErr.stack += `\n${err.stack}`
+      throw mergedErr
+    }
+  }
 }
