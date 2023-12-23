@@ -12,11 +12,20 @@ export async function load(uri, context, fallback) {
   const extn = extname(file)
   if (['.js', '.jsx', '.ts', '.tsx'].includes(extn)) {
     const code = await readFile(file, 'utf8')
-    const output = sucrase.transform(code, {
-      transforms: ['typescript', 'jsx'],
-      jsxImportSource: 'preact',
-      jsxRuntime: 'automatic',
-    })
+    let output = {
+      code: '',
+    }
+    try {
+      output = sucrase.transform(code, {
+        transforms: ['typescript', 'jsx'],
+        jsxImportSource: 'preact',
+        jsxRuntime: 'automatic',
+      })
+    } catch (err) {
+      const error = new Error(`Failed to normalise and load ${file}`)
+      error.stack += '\n' + err.stack
+      throw error
+    }
 
     global.nomenCache[file] = output.code
 
