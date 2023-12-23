@@ -21,6 +21,12 @@ const defaultEntry = join(process.cwd(), 'src', './index.html')
 
 const html = String.raw
 
+const nomenAsset = {
+  baseURL: '.nomen',
+  dir: '.nomen',
+  maxAge: 60 * 60 * 24 * 7, // 7 days
+}
+
 const defaultConfig = {
   routes: {},
   modules: [],
@@ -32,6 +38,13 @@ const defaultConfig = {
       scripts: '<!-- app-scripts-placeholder -->',
     },
   },
+  assets: [
+    {
+      baseURL: 'assets',
+      dir: 'assets',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    },
+  ],
   routeNotFoundTemplate: html`
     <html>
       <head>
@@ -57,6 +70,8 @@ const defaultConfig = {
 export function createNomen(options = {}) {
   const mergedConfig = defu(options, defaultConfig)
   const { routes, modules, client = {} } = mergedConfig
+
+  mergedConfig.assets.push(nomenAsset)
 
   const kernel = {
     options: mergedConfig,
