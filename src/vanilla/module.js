@@ -64,7 +64,7 @@ export function vanilla() {
             status: 404,
           })
 
-        const moduleDef = activeRouteHandler.handler
+        const moduleDef = await activeRouteHandler.meta.reimportModule()
 
         let serverData = {}
         if ('onServer' in moduleDef) {
@@ -86,9 +86,10 @@ export function vanilla() {
           .replace(moduleCtx.options.template.placeholders.content, '')
           .replace(
             moduleCtx.options.template.placeholders.scripts,
-            ` <script type="application/json" id="__nomen_meta">
+            `<script type="application/json" id="__nomen_meta">
                 ${JSON.stringify(serverData, null, 2)}
               </script>
+              ${moduleCtx.socket.getConnectionScript()}
               <script type="module" async defer>
                 import { render } from '/${join(
                   '.nomen',

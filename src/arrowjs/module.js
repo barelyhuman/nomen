@@ -5,6 +5,7 @@ import { basename, dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineModule } from '../lib/module.js'
 import { esbuildClientNormalizer } from '../lib/plugins/client-normalizer.js'
+import { stringify } from '../head/utils.js'
 
 let clientMapByPath = new Map()
 
@@ -60,40 +61,35 @@ export function arrowJS() {
             status: 404,
           })
 
-        if ('onServer' in activeRouteHandler.handler)
-          await activeRouteHandler.handler.onServer(
-            ctx,
-            activeRouteHandler.params
-          )
+        const moduleDef = await activeRouteHandler.meta.reimportModule()
 
-        const output = await activeRouteHandler.handler.render()
+        if ('onServer' in moduleDef)
+          await moduleDef.onServer(ctx, activeRouteHandler.params)
+
+        const output = await moduleDef.render()
 
         if (!('isT' in output)) return await ctx.next()
 
         const component = renderToString(output)
-        const currentState = activeRouteHandler.handler.state
+        const currentState = moduleDef.state
         const out = clientMapByPath.get(activeRouteHandler.meta.path)
 
         const headContext = moduleCtx.getHeadContext()
+        const headHTML = stringify(headContext)
 
-        return html(
-          `
-            <html>
-            <head>
-            <meta charset="UTF-8" />
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1.0"
-            />
-            ${headContext.title ? `<title>${headContext.title}</title>` : ''}
-            </head>
-            <body>
-            <div id="app">${component}</div>
+        const htmlBase = moduleCtx.options.template.entry
+          .replace(moduleCtx.options.template.placeholders.head, headHTML)
+          .replace(moduleCtx.options.template.placeholders.content, component)
+          .replace(
+            moduleCtx.options.template.placeholders.scripts,
+            `
             <script type="application/json" id="__nomen_meta">
               ${JSON.stringify(currentState, null, 2)}
             </script>
-
-            <script type="module" defer async>
+          
+            ${moduleCtx.socket.getConnectionScript()}
+              
+              <script type="module" defer async>
               import { state, render } from '/${join(
                 '.nomen',
                 basename(dirname(out)),
@@ -104,15 +100,14 @@ export function arrowJS() {
 
               rehydrate(state, render)
             </script>
-            </body>
-            </html>
-          `,
-          {
-            headers: {
-              'content-type': 'text/html',
-            },
-          }
-        )
+            `
+          )
+
+        return html(htmlBase, {
+          headers: {
+            'content-type': 'text/html',
+          },
+        })
       }
 
       moduleCtx.handlers.push(handler)

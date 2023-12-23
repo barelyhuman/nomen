@@ -91,7 +91,7 @@ export function preact() {
           basename(activeRouteHandler.meta.path)
         )
 
-        const compiledModule = await import(compiledOut)
+        const compiledModule = await import(`${compiledOut}?${Date.now()}`)
         const moduleDef = compiledModule
 
         let serverData = {}
@@ -119,6 +119,10 @@ export function preact() {
           .replace(
             moduleCtx.options.template.placeholders.content,
             componentHTML
+          )
+          .replace(
+            moduleCtx.options.template.placeholders.scripts,
+            `${moduleCtx.socket.getConnectionScript()}`
           )
 
         return html(htmlBase, {
