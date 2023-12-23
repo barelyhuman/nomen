@@ -4,9 +4,11 @@ import { extname, isAbsolute, join, resolve } from 'node:path'
 import { defineModule } from './lib/module.js'
 import { createRouter } from './lib/router.js'
 import { createContext } from 'esbuild-multicontext'
+import { GLOBALS } from './constants.js'
 
 let _routeConfig = {}
-const nomenCache = 'nomenCache' in global ? global.nomenCache : {}
+const nomenCache =
+  GLOBALS.NOMEN_CACHE in global ? global[GLOBALS.NOMEN_CACHE] : {}
 
 export default async function defineRoutes(routeConfig) {
   _routeConfig = routeConfig

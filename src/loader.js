@@ -2,8 +2,9 @@ import { fileURLToPath } from 'node:url'
 import { readFile } from 'node:fs/promises'
 import { extname } from 'node:path'
 import sucrase from 'sucrase'
+import { GLOBALS } from './constants.js'
 
-global.nomenCache = {}
+global[GLOBALS.NOMEN_CACHE] = {}
 
 export async function load(uri, context, fallback) {
   if (uri.startsWith('node:')) return fallback(uri, context, fallback)
@@ -27,7 +28,7 @@ export async function load(uri, context, fallback) {
       throw error
     }
 
-    global.nomenCache[file] = output.code
+    global[GLOBALS.NOMEN_CACHE][file] = output.code
 
     return {
       format: context.format || 'commonjs',
