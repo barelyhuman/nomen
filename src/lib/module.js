@@ -9,7 +9,7 @@ export function defineModule(modDef) {
 }
 
 export async function loadModules(context) {
-  for (let currentModuleKey of moduleGraph.keys()) 
+  for (let currentModuleKey of moduleGraph.keys())
     try {
       const currentModuleDefinition = moduleGraph.get(currentModuleKey)
       if (currentModuleDefinition.loaded) continue
@@ -29,18 +29,16 @@ export async function loadModules(context) {
       mergedErr.stack += `\n${err.stack}`
       throw mergedErr
     }
-  }
 
-  for (let currentModuleKey of moduleGraph.keys()) {
-    try{
+  for (let currentModuleKey of moduleGraph.keys())
+    try {
       const currentModuleDefinition = moduleGraph.get(currentModuleKey)
       const modDef = currentModuleDefinition.mod
       if (!modDef.onBooted) continue
       await modDef.onBooted(context)
-    }catch(err){
+    } catch (err) {
       const mergedErr = new Error(`Error booting module: ${currentModuleKey}`)
       mergedErr.stack += `\n${err.stack}`
       throw mergedErr
     }
-  }
 }
