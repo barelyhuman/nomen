@@ -28,18 +28,20 @@ defineModule({
       const importFnString = _routeConfig[key].toString()
 
       const filePath = importFnString.match(/(import)\(["'](.*)["']\)/)[2]
-
+      const modulePath = isAbsolute(filePath)
+        ? filePath
+        : resolve(ctx.projectRoot, filePath)
       const module = await _routeConfig[key]()
 
       ctx.routerEntries.push({
-        path: isAbsolute(filePath)
-          ? filePath
-          : resolve(ctx.projectRoot, filePath),
+        path: modulePath,
         module,
         transformedSource: nomenCache[resolve(ctx.projectRoot, filePath)],
       })
+
       router.add('all', urlPath, module, {
         path: resolve(ctx.projectRoot, filePath),
+        reimportModule: () => import(`${modulePath}?${Date.now()}`),
       })
     }
 

@@ -12,7 +12,7 @@ defineModule({
       awaitWriteFinish: true,
     })
 
-    watcherInstance.add('./**/*.js')
+    watcherInstance.add('./**/*.{js,ts,tsx,jsx,mjs}')
     ctx.watcher = watcherInstance
   },
 })
