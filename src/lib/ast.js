@@ -1,15 +1,15 @@
 import * as acorn from 'acorn'
 // import { generate } from '@barelyhuman/astring-jsx'
 import jsx from 'acorn-jsx'
-// import classFields from 'acorn-class-fields'
-// import { importAssertions } from 'acorn-import-assertions'
-// import staticClassFeatures from 'acorn-static-class-features'
+import classFields from 'acorn-class-fields'
+import { importAssertions } from 'acorn-import-assertions'
+import staticClassFeatures from 'acorn-static-class-features'
 
 const jsxParser = acorn.Parser.extend(
-  jsx()
-  // classFields,
-  // importAssertions,
-  // staticClassFeatures
+  jsx(),
+  classFields,
+  importAssertions,
+  staticClassFeatures
 )
 
 /**
