@@ -9,7 +9,6 @@ defineModule({
 
     const watcherInstance = chokidar.watch('.', {
       ignored: [/.nomen/, /node_modules/],
-      awaitWriteFinish: true,
     })
 
     watcherInstance.add('./**/*.{js,ts,tsx,jsx,mjs}')

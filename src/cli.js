@@ -18,9 +18,22 @@ if (argSeparator > -1) {
 
 let baseCommand = 'node'
 
-const { hasFlag: hasDevFlag } = consumeBoolean('--dev', nomenArgs)
+const flags = {
+  dev: false,
+}
 
-if (hasDevFlag) process.env.NOMEN_DEV = true
+const argIter = lazyLoop(nomenArgs)
+
+for (let arg of argIter) 
+  switch (arg) {
+    case '--dev': {
+      flags.dev = true
+      break
+    }
+  }
+
+
+if (flags.dev) process.env.NOMEN_DEV = true
 
 const _process = spawn(
   baseCommand,
@@ -44,16 +57,11 @@ await new Promise(resolve => {
   })
 })
 
-function consumeBoolean(flag, args) {
-  let hasFlag = false
-
-  for (let arg of args)
-    if (arg === flag) {
-      hasFlag = true
-      break
-    }
-
-  return {
-    hasFlag,
-  }
+function* lazyLoop(args) {
+  const _clone = args.slice()
+  let toRead
+  while ((toRead = _clone.shift())) 
+    yield toRead
+  
+  return
 }
