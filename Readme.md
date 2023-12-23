@@ -38,9 +38,9 @@ Think of it as another "One Man fullstack framework" in the JS land
   - [x] Preact
   - [x] VanillaJS
 - [ ] Page Head Support
-- [ ] Dev Server Essentials
-  - [ ] Watcher
-  - [ ] Live Reload
+- [x] Dev Server Essentials
+  - [x] Watcher
+  - [x] Live Reload
   - [ ] HMR
 - [x] Custom Template (_index.html_)
 - [x] Custom 404 Page
