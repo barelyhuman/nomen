@@ -16,7 +16,7 @@ export function preact() {
     async onLoad(ctx) {
       const routeOutputs = []
 
-      const chunkOut = join(ctx.packageRoot, ctx.nomenOut, 'server-chunks')
+      const chunkOut = join(ctx.nomenOut, 'server-chunks')
 
       for (let entry of ctx.routerEntries) {
         const sourceCode = entry.transformedSource
@@ -85,7 +85,6 @@ export function preact() {
           })
 
         const compiledOut = join(
-          moduleCtx.packageRoot,
           moduleCtx.nomenOut,
           'server-chunks',
           basename(activeRouteHandler.meta.path)

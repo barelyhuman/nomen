@@ -5,7 +5,6 @@ import { findUp } from 'find-up'
 defineModule({
   name: 'nomen:root',
   async onLoad(ctx) {
-    ctx.nomenOut = '.nomen'
     if (ctx.options?.root) {
       const root = isAbsolute(ctx.options.root)
         ? ctx.options.root
@@ -14,6 +13,8 @@ defineModule({
     } else {
       ctx.projectRoot = process.cwd()
     }
+
+    ctx.nomenOut = join(process.cwd(), '.nomen')
 
     const pkgPath = await findUp('package.json', {
       cwd: ctx.projectRoot,

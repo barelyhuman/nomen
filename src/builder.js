@@ -1,6 +1,6 @@
 import { lookup } from 'mrmime'
 import { createReadStream, existsSync, statSync } from 'node:fs'
-import { extname, isAbsolute, join, resolve } from 'node:path'
+import { dirname, extname, isAbsolute, join, resolve } from 'node:path'
 import { defineModule } from './lib/module.js'
 import { createRouter } from './lib/router.js'
 import { createContext } from 'esbuild-multicontext'
@@ -52,7 +52,7 @@ defineModule({
     // handle assets
     for (let asset of ctx.options.assets) {
       const assetURL = join('/', asset.baseURL, '**')
-      router.add('all', assetURL, staticServe(ctx, asset, ctx.projectRoot), {
+      router.add('all', assetURL, staticServe(ctx, asset, dirname(asset.dir)), {
         disableMiddleware: true,
       })
     }

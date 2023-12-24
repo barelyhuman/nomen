@@ -14,7 +14,7 @@ export function vanilla() {
     async onLoad(ctx) {
       const routeOutputs = []
 
-      const chunkOut = join(ctx.packageRoot, ctx.nomenOut, 'client-chunks')
+      const chunkOut = join(ctx.nomenOut, 'client-chunks')
 
       for (let entry of ctx.routerEntries) {
         clientMapByPath.set(entry.path, join(chunkOut, basename(entry.path)))
