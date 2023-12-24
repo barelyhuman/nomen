@@ -33,7 +33,9 @@ defineModule({
       const modulePath = isAbsolute(filePath)
         ? filePath
         : resolve(ctx.projectRoot, filePath)
-      const module = await _routeConfig[key]()
+
+      const importModule = () => import(`${modulePath}?${Date.now()}`)
+      const module = await importModule()
 
       ctx.routerEntries.push({
         path: modulePath,
@@ -43,7 +45,7 @@ defineModule({
 
       router.add('all', urlPath, module, {
         path: resolve(ctx.projectRoot, filePath),
-        reimportModule: () => import(`${modulePath}?${Date.now()}`),
+        reimportModule: importModule,
       })
     }
 

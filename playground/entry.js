@@ -7,7 +7,10 @@ import { vanilla } from 'nomen-js/vanilla'
 import fs from 'node:fs'
 
 const nomen = createNomen({
-  routes: routes,
+  routes: {
+    ...routes,
+    '/name/sid': () => import('./routes/sid.js'),
+  },
   modules: [preact, arrowJS, vanilla],
   template: {
     entry: fs.readFileSync('./index.html', 'utf8'),
