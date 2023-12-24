@@ -2,20 +2,19 @@ import './builder.js'
 import './handlers.js'
 import './head/module.js'
 import './kernel.js'
-import './watcher.js'
+import { defineModule, loadModules } from './lib/module.js'
 import './socket/module.js'
-import { defineModule, loadModules, reloadModules } from './lib/module.js'
+import './watcher.js'
 
 import fs from 'node:fs'
-import { readFile } from 'node:fs/promises'
 
 import { compose } from '@hattip/compose'
 
 export { defineModule }
 
+import { defu } from 'defu'
 import { join } from 'node:path'
 import defineRoutes from './builder.js'
-import { defu } from 'defu'
 
 const defaultEntry = join(process.cwd(), 'src', './index.html')
 
