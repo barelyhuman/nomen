@@ -7,9 +7,9 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "dev": "nomen --dev entry.js",
+    "dev": "nomen --dev src/entry.js",
     "fix": "npx prettier --write .",
-    "start": "node entry.js"
+    "start": "nomen src/entry.js"
   },
   "nodemonConfig": {
     "ignore": [
