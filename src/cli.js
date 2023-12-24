@@ -33,9 +33,7 @@ for (let arg of argIter)
     }
   }
 
-if (flags.dev) 
-  process.env.NOMEN_DEV = true
-
+if (flags.dev) process.env.NOMEN_DEV = true
 
 console.log(`[${new Date().toLocaleTimeString()}]`)
 let processWrapper = startWrappedProcess()

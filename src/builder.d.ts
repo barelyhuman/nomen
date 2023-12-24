@@ -1,1 +1,1 @@
-export default function defineRoutes(routeConfig: any): Promise<void>;
+export default function defineRoutes(routeConfig: any): Promise<void>

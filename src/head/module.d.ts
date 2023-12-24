@@ -1,1 +1,1 @@
-export { stringify, head } from "./utils.js";
+export { stringify, head } from './utils.js'

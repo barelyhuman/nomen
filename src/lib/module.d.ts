@@ -6,12 +6,12 @@
  * @returns {void}
  */
 export function defineModule(modDef: {
-    name: string;
-    onLoad: (ctx: any) => void | Promise<void>;
-    onBooted: (ctx: any) => void | Promise<void>;
-}): void;
+  name: string
+  onLoad: (ctx: any) => void | Promise<void>
+  onBooted: (ctx: any) => void | Promise<void>
+}): void
 /**
  * @param {object} context
  * @returns {void}
  */
-export function loadModules(context: object): void;
+export function loadModules(context: object): void
