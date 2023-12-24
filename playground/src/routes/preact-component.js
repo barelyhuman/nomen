@@ -16,8 +16,6 @@ export function onServer(context, [id]) {
   })
 
   return {
-    props: {
-      id,
-    },
+    id,
   }
 }

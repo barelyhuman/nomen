@@ -2,16 +2,6 @@ import { join } from 'node:path'
 import { h, mount } from '../lib/create-element.js'
 import { head } from 'nomen-js/head'
 
-// head({
-//   title: 'hello world',
-//   links: [
-//     {
-//       rel: 'stylesheet',
-//       href: './hello.css',
-//     },
-//   ],
-// })
-
 export function render({ props }) {
   const rawComponent = h(
     'div',
@@ -28,6 +18,9 @@ export function render({ props }) {
 }
 
 export function onServer(ctx, params) {
+  head({
+    title: 'hello world',
+  })
   const sum = 100 * 32 * 34
   return {
     props: {

@@ -107,7 +107,7 @@ export function preact() {
         const ProxyComponent = compiledModule.render
         const componentHTML = renderToString(
           h(ProxyComponent, {
-            ...serverData.props,
+            ...serverData,
           })
         )
 

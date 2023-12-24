@@ -63,15 +63,18 @@ export function arrowJS() {
 
         const moduleDef = await activeRouteHandler.meta.reimportModule()
 
+        let serverOutput = {}
         if ('onServer' in moduleDef)
-          await moduleDef.onServer(ctx, activeRouteHandler.params)
+          serverOutput = await moduleDef.onServer(
+            ctx,
+            activeRouteHandler.params
+          )
 
-        const output = await moduleDef.render()
+        const output = await moduleDef.render(serverOutput)
 
         if (!('isT' in output)) return await ctx.next()
 
         const component = renderToString(output)
-        const currentState = moduleDef.state
         const out = clientMapByPath.get(activeRouteHandler.meta.path)
 
         const headContext = moduleCtx.getHeadContext()
@@ -84,13 +87,13 @@ export function arrowJS() {
             moduleCtx.options.template.placeholders.scripts,
             `
             <script type="application/json" id="__nomen_meta">
-              ${JSON.stringify(currentState, null, 2)}
+              ${JSON.stringify(serverOutput, null, 2)}
             </script>
           
             ${moduleCtx.socket.getConnectionScript()}
               
               <script type="module" defer async>
-              import { state, render } from '/${join(
+              import { render } from '/${join(
                 '.nomen',
                 basename(dirname(out)),
                 basename(out)
@@ -98,7 +101,7 @@ export function arrowJS() {
 
               ${readFileSync(join(__dirname, 'rehydrate.js'), 'utf8')}
 
-              rehydrate(state, render)
+              rehydrate(render)
             </script>
             `
           )

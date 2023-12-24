@@ -1,13 +1,11 @@
 import { html, reactive } from '@arrow-js/core'
-import { Layout } from '../components/layout.js'
 import { head } from 'nomen-js/head'
 
-export const state = reactive({
-  id: '',
-  count: 0,
-})
-
-export function render() {
+export function render(props) {
+  const state = reactive({
+    id: props.id,
+    count: props.count,
+  })
   return html`
     <p>Param ${() => state.id}</p>
     <p>Hello ${() => state.count}!</p>
@@ -17,9 +15,11 @@ export function render() {
 }
 
 export function onServer(context, [id]) {
-  state.id = id
-  state.count = 1003
   head({
-    title: `Hello ${state.id}`,
+    title: `Hello ${id}`,
   })
+  return {
+    id: id,
+    count: 1003,
+  }
 }
