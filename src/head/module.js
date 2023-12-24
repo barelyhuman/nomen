@@ -1,7 +1,7 @@
 import { defineModule } from '../lib/module.js'
-import { getCurrentContext, updateContext, createContext } from './context.js'
+import { createContext, getCurrentContext } from './context.js'
 import { namespace } from './utils.js'
-export { stringify, head } from './utils.js'
+export { head, stringify } from './utils.js'
 
 defineModule({
   name: namespace,

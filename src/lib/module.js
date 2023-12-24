@@ -1,5 +1,12 @@
 const moduleGraph = new Map()
 
+/**
+ * @param {object} modDef
+ * @param {string} modDef.name
+ * @param {(ctx:any)=>void|Promise<void>} modDef.onLoad
+ * @param {(ctx:any)=>void|Promise<void>} modDef.onBooted
+ * @returns {void}
+ */
 export function defineModule(modDef) {
   moduleGraph.set(modDef.name, {
     loaded: false,
@@ -8,6 +15,10 @@ export function defineModule(modDef) {
   })
 }
 
+/**
+ * @param {object} context
+ * @returns {void}
+ */
 export async function loadModules(context) {
   for (let currentModuleKey of moduleGraph.keys())
     try {

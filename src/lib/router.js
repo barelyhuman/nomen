@@ -1,3 +1,7 @@
+/**
+ * @param {"GET"|"POST"|"PUT"|"DELETE"|string} method
+ * @returns {string}
+ */
 export function toKey(method) {
   return method.trim().toLowerCase()
 }
@@ -5,12 +9,29 @@ export function toKey(method) {
 export function createRouter() {
   const routes = new Map()
   return {
+    /**
+     * @param {string} method
+     * @param {string} route
+     * @param {any} handler
+     * @param {object} meta
+     */
     add: (method, route, handler, meta) =>
       add(routes, method, route, handler, meta),
+    /**
+     * @param {string} method
+     * @param {string} route
+     */
     find: (method, route) => find(routes, method, route),
   }
 }
 
+/**
+ * @param {Map<string,any>} routerMap
+ * @param {string} method
+ * @param {string} route
+ * @param {any} handler
+ * @param {object} meta
+ */
 function add(routerMap, method, route, handler, meta = {}) {
   const key = toKey(method)
   const handlers = routerMap.get(key) || []
