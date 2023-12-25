@@ -1,6 +1,7 @@
 # nomen-js
 
 [![](https://img.shields.io/badge/plainjs-blue?colorA=181819&colorB=181819&logo=npm&logoColor=efefef)](https://plainjs.github.io)
+[![](https://img.shields.io/github/actions/workflow/status/barelyhuman/nomen/test.yml?logo=github&label=Test&logoColor=efefef&color=181819&colorA=181819&colorB=181819)](https://github.com/barelyhuman/nomen/actions/workflows/test.yml)
 
 `nomen` is a minimal but extensible framework for server based applications.
 
