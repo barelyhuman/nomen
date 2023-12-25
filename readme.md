@@ -1,5 +1,7 @@
 # nomen-js
 
+[![](https://img.shields.io/badge/plainjs-blue?colorA=181819&colorB=181819&logo=npm&logoColor=efefef)](https://plainjs.github.io)
+
 `nomen` is a minimal but extensible framework for server based applications.
 
 - [nomen-js](#nomen-js)
