@@ -59,11 +59,6 @@ export function vanilla() {
             status: 404,
           })
 
-        if (!('render' in activeRouteHandler.handler))
-          return new Response(null, {
-            status: 404,
-          })
-
         const moduleDef = await activeRouteHandler.meta.reimportModule()
 
         let serverData = {}
@@ -72,8 +67,13 @@ export function vanilla() {
             ctx,
             activeRouteHandler.params
           )
+          if (onServerResult instanceof Response) 
+            return onServerResult
+          
           Object.assign(serverData, onServerResult)
         }
+
+        if (!('render' in activeRouteHandler.handler)) return ctx.next()
 
         const headContext = moduleCtx.getHeadContext()
 

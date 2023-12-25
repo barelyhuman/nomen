@@ -79,11 +79,6 @@ export function preact() {
             status: 404,
           })
 
-        if (!('render' in activeRouteHandler.handler))
-          return new Response(null, {
-            status: 404,
-          })
-
         const compiledOut = join(
           moduleCtx.nomenOut,
           'server-chunks',
@@ -99,8 +94,13 @@ export function preact() {
             ctx,
             activeRouteHandler.params
           )
+          if (onServerResult instanceof Response) 
+            return onServerResult
+          
           Object.assign(serverData, onServerResult)
         }
+
+        if (!('render' in activeRouteHandler.handler)) return serverData
 
         const headContext = moduleCtx.getHeadContext()
 

@@ -56,19 +56,21 @@ export function arrowJS() {
             status: 404,
           })
 
-        if (!('render' in activeRouteHandler.handler))
-          return new Response(null, {
-            status: 404,
-          })
-
         const moduleDef = await activeRouteHandler.meta.reimportModule()
 
         let serverOutput = {}
-        if ('onServer' in moduleDef)
-          serverOutput = await moduleDef.onServer(
+        if ('onServer' in moduleDef) {
+          const onServerResult = await moduleDef.onServer(
             ctx,
             activeRouteHandler.params
           )
+          if (onServerResult instanceof Response) 
+            return onServerResult
+          
+          Object.assign(serverOutput, onServerResult)
+        }
+
+        if (!('render' in activeRouteHandler.handler)) return serverOutput
 
         const output = await moduleDef.render(serverOutput)
 
