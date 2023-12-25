@@ -10,10 +10,13 @@ function connectionHandler() {
     })
   }
 }
+
 defineModule({
   name: 'nomen:socket',
   dependsOn: ['nomen:builder', 'nomen:watcher'],
   onLoad(ctx) {
+    if (!ctx.server) return
+
     ctx.socket = {}
     const socketServer = new WebSocketServer({
       noServer: true,
@@ -29,6 +32,8 @@ defineModule({
     })
   },
   onBooted(ctx) {
+    if (!ctx.server) return
+
     ctx.server.on('connection', client => {
       // Get server's current running port
       ctx.socket.runningOnPort = ctx.server.address().port
