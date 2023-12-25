@@ -88,7 +88,13 @@ export function createNomen(options = {}) {
       kernel.server = server
       await loadModules(kernel)
       if (kernel.env.NOMEN_DEV) await kernel.builder.watch()
-      await kernel.builder.build()
+
+      if (
+        (process.env.NODE_ENV = 'production' && !hasManifest(kernel.nomenOut))
+      ) {
+        await kernel.builder.build()
+        createManifest(kernel.nomenOut)
+      }
     },
     handler: async context => {
       const path = new URL(context.request.url).pathname
@@ -113,4 +119,23 @@ export function createNomen(options = {}) {
       return compose(kernel.handlers)(context)
     },
   }
+}
+
+function hasManifest(basePath) {
+  const hasFile = fs.existsSync(join(basePath, 'nomen.json'))
+  return hasFile
+}
+
+function createManifest(basePath) {
+  fs.writeFileSync(
+    join(basePath, 'nomen.json'),
+    JSON.stringify(
+      {
+        buildTime: Date.now(),
+      },
+      null,
+      2
+    ),
+    'utf8'
+  )
 }
