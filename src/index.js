@@ -12,11 +12,13 @@ import { compose } from '@hattip/compose'
 
 export { defineModule }
 
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 import defineRoutes from './builder.js'
 import { defu } from 'defu'
+import { fileURLToPath } from 'node:url'
 
-const defaultEntry = join(process.cwd(), 'src', './index.html')
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const defaultEntry = join(__dirname, 'runtime/templates/index.html')
 
 const html = String.raw
 
