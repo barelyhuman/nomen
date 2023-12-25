@@ -6,15 +6,22 @@
   "license": "MIT",
   "author": "",
   "type": "module",
+  "types": "./src/index.d.ts",
   "bin": {
     "nomen": "./src/cli.js"
   },
   "exports": {
-    ".": "./src/index.js",
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    },
     "./arrow": "./src/arrowjs/module.js",
     "./preact": "./src/preact/module.js",
     "./vanilla": "./src/vanilla/module.js",
-    "./head": "./src/head/module.js",
+    "./head": {
+      "types": "./src/head/module.d.ts",
+      "default": "./src/head/module.js"
+    },
     "./loader": "./src/loader.js"
   },
   "files": [
