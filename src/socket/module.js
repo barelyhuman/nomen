@@ -31,7 +31,7 @@ defineModule({
       })
     })
   },
-  onBooted(ctx) {
+  onBoot(ctx) {
     if (!ctx.server) return
 
     ctx.server.on('connection', client => {

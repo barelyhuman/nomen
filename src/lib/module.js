@@ -4,7 +4,7 @@ const moduleGraph = new Map()
  * @param {object} modDef
  * @param {string} modDef.name
  * @param {(ctx:any)=>void|Promise<void>} modDef.onLoad
- * @param {(ctx:any)=>void|Promise<void>} modDef.onBooted
+ * @param {(ctx:any)=>void|Promise<void>} modDef.onBoot
  * @returns {void}
  */
 export function defineModule(modDef) {
@@ -45,8 +45,8 @@ export async function loadModules(context) {
     try {
       const currentModuleDefinition = moduleGraph.get(currentModuleKey)
       const modDef = currentModuleDefinition.mod
-      if (!modDef.onBooted) continue
-      await modDef.onBooted(context)
+      if (!modDef.onBoot) continue
+      await modDef.onBoot(context)
     } catch (err) {
       const mergedErr = new Error(`Error booting module: ${currentModuleKey}`)
       mergedErr.stack += `\n${err.stack}`
