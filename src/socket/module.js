@@ -46,7 +46,7 @@ defineModule({
       })
     }
 
-    ctx.socket.getConnectionScript = ''
+    ctx.socket.getConnectionScript = () => ''
     if (!ctx.env.NOMEN_DEV) return
 
     ctx.socket.getConnectionScript = () => `<script>
