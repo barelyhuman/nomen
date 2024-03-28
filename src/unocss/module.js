@@ -17,7 +17,7 @@ export function unocss(config) {
             const cssOutput = await generator.generate(oldHTML)
             if (/\<(head)\>/.test(oldHTML)) {
               const htmlResult = oldHTML.replace(
-                `<head></head>`,
+                `<head>`,
                 `<head>
                   <style>
                     ${cssOutput.css}
