@@ -17,6 +17,7 @@
     },
     "./arrow": "./src/arrowjs/module.js",
     "./preact": "./src/preact/module.js",
+    "./unocss": "./src/unocss/module.js",
     "./vanilla": "./src/vanilla/module.js",
     "./head": {
       "types": "./src/head/module.d.ts",
